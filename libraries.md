@@ -24,3 +24,11 @@ Cambiar el idioma por defecto de las vistas
 composer require laravel-lang/common
 php artisan lang:add es
 ```
+
+### FrontEnd
+
+## SweetAlert
+
+```bash
+npm install sweetalert2
+```

@@ -10,12 +10,15 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
+    {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     {{-- Font Awesome --}}
     <script src="https://kit.fontawesome.com/2d470a23f4.js" crossorigin="anonymous"></script>
+
+    {{-- Swal --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -32,7 +35,7 @@
     @include('layouts.partials.admin.navigation')
     @include('layouts.partials.admin.siderbar')
 
-    <div class="p-4 h-screen dark:bg-gray-900 sm:ml-64">
+    <div class="p-4 h-max-screen dark:bg-gray-900 sm:ml-64">
         <div class="mt-14">
             <div class="flex justify-between items-center">
                 @include('layouts.partials.admin.breadcrumb')
@@ -51,8 +54,16 @@
 
     @livewireScripts
 
-    {{-- recibir codigo js enviado ejecutado desde las vistas hijas --}}
+    {{-- recibir codigo js enviado ejecutado desde las vistas hijas
+        ** El codigo es enviado a traves de la notacion @push('js')...@endpush() --}}
     @stack('js')
+
+    {{-- validar que exista el valor `swal` en la session --}}
+    @if (session('swal'))
+        <script>
+            Swal.fire({!! json_encode(session('swal')) !!});
+        </script>
+    @endif
 </body>
 
 </html>
