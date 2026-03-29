@@ -6,12 +6,19 @@
             'route' => route('admin.dashboard'),
             'active' => request()->routeIs('admin.dashboard'), // validar si la ruta actual corresponde a la ruta con nombre `admin.dashboard`
         ],
-        // familia de productos
+        // Familias de productos
         [
             'icon' => 'fa-solid fa-box-open',
             'name' => 'Familias',
             'route' => route('admin.families.index'),
             'active' => request()->routeIs('admin.families.*'),
+        ],
+        // Categorias de productos
+        [
+            'icon' => 'fa-solid fa-layer-group',
+            'name' => 'Categorias',
+            'route' => route('admin.categories.index'),
+            'active' => request()->routeIs('admin.categories.*'),
         ],
     ];
 @endphp
