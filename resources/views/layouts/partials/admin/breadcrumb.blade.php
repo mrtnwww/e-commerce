@@ -16,7 +16,7 @@
 
             @if (count($breadcrumbs) > 1)
                 <h6 class="font-bold dark:text-white">
-                    {{-- acceder al ultimo elemento de un array --}}
+                    {{-- acceder al ultimo elemento del array --}}
                     {{ end($breadcrumbs)['name'] }}
                 </h6>
             @endif

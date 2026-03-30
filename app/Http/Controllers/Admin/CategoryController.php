@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Family;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -25,7 +26,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $families = Family::all();
+        return view('admin.categories.create', compact('families'));
     }
 
     /**
@@ -33,7 +35,23 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'family_id' => 'required|integer'
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+            'family_id' => $request->family_id
+        ]);
+
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => 'Exito',
+            'text' => 'Categoría creada exitósamente'
+        ]);
+
+        return redirect()->route('admin.categories.index');
     }
 
     /**

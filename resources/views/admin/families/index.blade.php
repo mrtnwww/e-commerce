@@ -9,7 +9,7 @@
 ]">
     {{-- slot con nombre --}}
     <x-slot name="action">
-        <a href="{{ route('admin.families.create') }}" type="button" class="btn btn-blue">Crear</a>
+        <a href="{{ route('admin.families.create') }}" type="button" class="btn btn-blue">Nuevo</a>
     </x-slot>
 
     @if (count($families))

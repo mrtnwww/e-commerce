@@ -4,12 +4,12 @@
         'route' => route('admin.dashboard'),
     ],
     [
-        'name' => 'Categorias',
+        'name' => 'Categorías',
     ],
 ]">
     {{-- slot con nombre --}}
     <x-slot name="action">
-        <a href="{{ route('admin.categories.create') }}" type="button" class="btn btn-blue">Crear</a>
+        <a href="{{ route('admin.categories.create') }}" type="button" class="btn btn-blue">Nuevo</a>
     </x-slot>
 
     @if (count($categories))
