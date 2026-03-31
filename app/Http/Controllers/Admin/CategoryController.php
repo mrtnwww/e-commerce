@@ -14,8 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('id', 'desc')
-            ->with('family')
+        $categories = Category::with('family')
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('admin.categories.index', compact('categories'));
@@ -67,7 +67,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        $families = Family::all();
+        return view('admin.categories.edit', compact('category', 'families'));
     }
 
     /**
