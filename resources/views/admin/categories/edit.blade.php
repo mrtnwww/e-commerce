@@ -12,7 +12,8 @@
     ],
 ]">
     <div class="card">
-        <form action="{{ route('admin.categories.store') }}" method="POST">
+        <form action="{{ route('admin.categories.update', $category) }}" method="POST">
+            @method('PUT')
             @csrf
 
             <x-validation-errors class="mb-4"></x-validation-errors>
@@ -33,7 +34,7 @@
             </div>
 
             <div class="flex justify-end">
-                <x-button>Guardar</x-button>
+                <x-button>Actualizar</x-button>
             </div>
         </form>
     </div>

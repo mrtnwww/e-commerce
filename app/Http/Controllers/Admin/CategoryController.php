@@ -37,7 +37,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'family_id' => 'required|integer'
+            'family_id' => 'required|exists:families,id'
         ]);
 
         Category::create([
@@ -76,7 +76,20 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'family_id' => 'required|exists:families,id'
+        ]);
+
+        $category->update($request->all());
+
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => 'Exito',
+            'text' => 'Categoría actualizada correctamente'
+        ]);
+
+        return redirect()->route('admin.categories.edit', $category);
     }
 
     /**
