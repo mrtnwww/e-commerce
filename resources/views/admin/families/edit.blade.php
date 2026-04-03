@@ -28,6 +28,7 @@
         </form>
     </div>
 
+    {{-- Eliminar familia --}}
     <form action="{{ route('admin.families.destroy', $family) }}" method="POST" id="delete-form">
         @csrf
         @method('DELETE')
@@ -37,7 +38,7 @@
         <script>
             function confirmDelete() {
                 Swal.fire({
-                    title: "¿Estas seguro?",
+                    title: "¿Está seguro?",
                     text: "Esta acción no se puede revertir!",
                     icon: "warning",
                     showCancelButton: true,

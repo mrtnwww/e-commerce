@@ -9,7 +9,7 @@
                     <i class="fa-solid fa-bars dark:text-white"></i>
                 </button>
                 <span class="text-2xl dark:text-white">
-                    Panel
+                    Panel Administrativo
                 </span>
             </div>
             <div class="flex items-center">

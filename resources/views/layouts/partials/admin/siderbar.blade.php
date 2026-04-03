@@ -15,11 +15,18 @@
         ],
         // Categorias de productos
         [
-            'icon' => 'fa-solid fa-layer-group',
-            'name' => 'Categorias',
+            'icon' => 'fa-solid fa-tags',
+            'name' => 'Categorías',
             'route' => route('admin.categories.index'),
             'active' => request()->routeIs('admin.categories.*'),
         ],
+        // Subcategorias de productos}
+        [
+            'icon' => 'fa-solid fa-layer-group',
+            'name' => 'Subcategorías',
+            'route' => route('admin.subcategories.index'),
+            'active' => request()->routeIs('admin.subcategories.*')
+        ]
     ];
 @endphp
 
