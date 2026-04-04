@@ -22,7 +22,7 @@
         ],
         // Subcategorias de productos}
         [
-            'icon' => 'fa-solid fa-layer-group',
+            'icon' => 'fa-solid fa-tag',
             'name' => 'Subcategorías',
             'route' => route('admin.subcategories.index'),
             'active' => request()->routeIs('admin.subcategories.*')
