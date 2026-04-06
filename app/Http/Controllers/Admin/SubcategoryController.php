@@ -26,11 +26,11 @@ class SubcategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.subcategories.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage.|
      */
     public function store(Request $request)
     {
@@ -50,9 +50,7 @@ class SubcategoryController extends Controller
      */
     public function edit(Subcategory $subcategory)
     {
-        $categories = Category::all();
-
-        return view('admin.subcategories.edit', compact('categories', 'subcategory'));
+        return view('admin.subcategories.edit', compact('subcategory'));
     }
 
     /**
@@ -60,10 +58,7 @@ class SubcategoryController extends Controller
      */
     public function update(Request $request, Subcategory $subcategory)
     {
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string'
-        ]);
+        //
     }
 
     /**
