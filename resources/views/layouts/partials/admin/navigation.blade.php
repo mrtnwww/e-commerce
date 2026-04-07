@@ -8,7 +8,7 @@
                     <span class="sr-only">Open sidebar</span>
                     <i class="fa-solid fa-bars dark:text-white"></i>
                 </button>
-                <span class="text-2xl dark:text-white">
+                <span class="xl:text-2xl dark:text-white">
                     Panel Administrativo
                 </span>
             </div>
