@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
+use App\Models\User;
 use Database\Seeders\FamilySeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,10 +22,10 @@ class DatabaseSeeder extends Seeder
         Storage::makeDirectory('products');
         // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::factory()->create([
+            'name' => 'Martin Wilches',
+            'email' => 'martin@mail.com',
+        ]);
 
         $this->call([
             FamilySeeder::class
