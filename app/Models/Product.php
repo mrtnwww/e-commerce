@@ -18,7 +18,7 @@ class Product extends Model
         'subcategory_id'
     ];
 
-    public function subcategories()
+    public function subcategory()
     {
         return $this->belongsTo(Subcategory::class); // un producto pertenece a una subcategoria (uno a uno)
     }

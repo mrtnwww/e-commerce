@@ -28,8 +28,23 @@ class ProductCreate extends Component
         'price' => ''
     ];
 
+    // Se ejecuta cada vez que se monta el componente
     public function mount() {
         $this->families = Family::all();
+    }
+
+    // Se ejecuta cada vez que se renderiza la vista
+    public function boot()
+    {
+        $this->withValidator(function($validator) {
+            if ($validator->fails()) {
+                $this->dispatch('swal', [
+                    'title' => 'Error',
+                    'text' => 'El formulario contiene errores',
+                    'icon' => 'error',
+                ]);
+            }
+        });
     }
 
     public function updatedFamilyId() {
@@ -65,6 +80,9 @@ class ProductCreate extends Component
             'product.subcategory_id' => 'El campo subcategoría es obligatorío',
             'product.price' => 'El campo precio es obligatorío'
         ]);
+
+        // Guardar la foto en la ruta /storage/app/products y retornar la ruta
+        $this->product['image_path'] = $this->image->store('products');
 
         $product = Product::create($this->product);
 

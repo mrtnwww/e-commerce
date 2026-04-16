@@ -31,6 +31,6 @@ class DatabaseSeeder extends Seeder
             FamilySeeder::class
         ]);
 
-        Product::factory(150)->create();
+        Product::factory(10)->create();
     }
 }
