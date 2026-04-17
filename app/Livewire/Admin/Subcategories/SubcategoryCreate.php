@@ -52,8 +52,8 @@ class SubcategoryCreate extends Component
 
         session()->flash('swal', [
             'title' => 'Exito',
-            'text' => 'Subcategoría creada exitosamente',
-            'icon' => 'success'
+            'icon' => 'success',
+            'text' => 'Subcategoría creada'
         ]);
 
         return redirect()->route('admin.subcategories.index');

@@ -88,8 +88,8 @@ class ProductCreate extends Component
 
         session()->flash('swal', [
             'title' => 'Exito',
-            'text' => 'Producto creado correctamente',
-            'icon' => 'success'
+            'icon' => 'success',
+            'text' => 'Producto creado'
         ]);
 
         return redirect()->route('admin.products.edit', $product);

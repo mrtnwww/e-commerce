@@ -71,8 +71,35 @@
             </div>
         </div>
 
-        <div class="flex justify-end mt-4">
-            <x-button>Actualizar producto</x-button>
-        </div>|
+        <div class="flex justify-end mt-4 gap-1.5">
+            <x-danger-button onclick="confirmDelete()">Eliminar</x-danger-button>
+            <x-button>Actualizar</x-button>
+        </div>
     </form>
+
+    <form id="delete-product" action="{{ route('admin.products.destroy', $product) }}" method="POST">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    @push('js')
+        <script>
+            function confirmDelete() {
+                Swal.fire({
+                    title: "¿Está seguro?",
+                    text: "Esta acción no se puede revertir!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-product').submit()
+                    }
+                })
+            }
+        </script>
+    @endpush
 </div>

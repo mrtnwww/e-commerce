@@ -80,8 +80,8 @@ class SubcategoryController extends Controller
 
         session()->flash('swal', [
             'title' => 'Exito',
-            'text' => 'Subcategoría eliminada correctamente',
-            'icon' => 'success'
+            'icon' => 'success',
+            'text' => 'Subcategoría eliminada'
         ]);
 
         return redirect()->route('admin.subcategories.index');

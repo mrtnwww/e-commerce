@@ -48,7 +48,7 @@ class CategoryController extends Controller
         session()->flash('swal', [
             'icon' => 'success',
             'title' => 'Exito',
-            'text' => 'Categoría creada exitósamente'
+            'text' => 'Categoría creada'
         ]);
 
         return redirect()->route('admin.categories.index');
@@ -86,7 +86,7 @@ class CategoryController extends Controller
         session()->flash('swal', [
             'icon' => 'success',
             'title' => 'Exito',
-            'text' => 'Categoría actualizada correctamente'
+            'text' => 'Categoría actualizada'
         ]);
 
         return redirect()->route('admin.categories.edit', $category);
@@ -102,7 +102,7 @@ class CategoryController extends Controller
         session()->flash('swal', [
             'icon' => 'success',
             'title' => 'Exito',
-            'text' => 'Categoría eliminada correctamente',
+            'text' => 'Categoría eliminada',
         ]);
 
         return redirect()->route('admin.categories.index');

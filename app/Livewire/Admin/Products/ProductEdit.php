@@ -92,8 +92,8 @@ class ProductEdit extends Component
 
         session()->flash('swal', [
             'title' => 'Exito',
-            'text' => 'Producto actualizado correctamente',
-            'icon' => 'success'
+            'icon' => 'success',
+            'text' => 'Producto actualizado correctamente'
         ]);
 
         return redirect()->route('admin.products.edit', $this->product);
