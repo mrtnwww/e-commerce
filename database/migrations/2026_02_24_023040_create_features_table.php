@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('value');
             $table->text('description');
-            $table->foreignId('options_id')->constrained();
+            $table->foreignId('option_id')->constrained();
 
             $table->timestamps();
         });

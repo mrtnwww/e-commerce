@@ -69,7 +69,7 @@ class ProductEdit extends Component
     public function store() {
         $this->validate([
             'image' => 'nullable|image|max:1024',
-            'productEdit.sku' => 'required|unique:products,sku,' . $this->product->id,
+            'productEdit.sku' => 'required|unique:products,sku,' . $this->product->id, // Permitir actualizar el producto sin conflicto con el constraint
             'productEdit.name' => 'required|max:255',
             'productEdit.description'=> 'nullable',
             'productEdit.subcategory_id' => 'required|exists:subcategories,id',

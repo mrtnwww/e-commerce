@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Product;
 use App\Models\User;
 use Database\Seeders\FamilySeeder;
+use Database\Seeders\OptionSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            FamilySeeder::class
+            FamilySeeder::class,
+            OptionSeeder::class
         ]);
 
         Product::factory(10)->create();

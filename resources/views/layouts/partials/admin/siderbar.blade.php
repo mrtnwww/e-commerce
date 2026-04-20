@@ -6,6 +6,13 @@
             'route' => route('admin.dashboard'),
             'active' => request()->routeIs('admin.dashboard'), // validar si la ruta actual corresponde a la ruta con nombre `admin.dashboard`
         ],
+        // Opciones
+        [
+            'icon' => 'fa-solid fa-cog',
+            'name' => 'Opciones',
+            'route' => route('admin.options.index'),
+            'active' => request()->routeIs('admin.options.*'),
+        ],
         // Familias de productos
         [
             'icon' => 'fa-solid fa-box-open',
