@@ -21,19 +21,19 @@ class OptionSeeder extends Seeder
                 'features' => [
                     [
                         'value' => 's',
-                        'description' => 'small'
+                        'description' => 'pequeño'
                     ],
                     [
                         'value' => 'm',
-                        'description' => 'medium'
+                        'description' => 'mediano'
                     ],
                     [
                         'value' => 'l',
-                        'description' => 'large'
+                        'description' => 'grande'
                     ],
                     [
                         'value' => 'xl',
-                        'description' => 'extra large'
+                        'description' => 'extra grande'
                     ]
                 ]
             ],
@@ -43,22 +43,22 @@ class OptionSeeder extends Seeder
                 'features' => [
                     [
                         'value' => '#000000',
-                        'description' => 'black'
+                        'description' => 'negro'
                     ],
                     [
                         'value' => '#ffffff',
-                        'description' => 'white'
+                        'description' => 'blanco'
                     ],
                     [
                         'value' => '#00ff00',
-                        'description' => 'green'
+                        'description' => 'verde'
                     ],
                     [
                         'value' => '#ff0000',
-                        'description' => 'red'
+                        'description' => 'rojo'
                     ],[
                         'value' => '#0000ff',
-                        'description' => 'blue'
+                        'description' => 'azul'
                     ]
                 ]
             ],
@@ -68,11 +68,11 @@ class OptionSeeder extends Seeder
                 'features' => [
                     [
                         'value' => 'm',
-                        'description' => 'male'
+                        'description' => 'masculino'
                     ],
                     [
                         'value' => 'f',
-                        'description' => 'female'
+                        'description' => 'femenino'
                     ]
                 ]
             ]

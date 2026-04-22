@@ -6,4 +6,6 @@
     [
         'name' => 'Opciones'
     ]
-]"></x-admin-layout>
+]">
+    @livewire('admin.options.manage-options')
+</x-admin-layout>
