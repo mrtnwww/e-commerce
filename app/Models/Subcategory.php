@@ -3,21 +3,35 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Subcategory extends Model
 {
-    protected $fillable = [
-        'name',
-        'category_id'
-    ];
+    protected $fillable = ['category_id', 'name', 'slug', 'description', 'active', 'order'];
 
-    public function category()
+    protected $casts = ['active' => 'boolean'];
+
+    protected static function boot(): void
     {
-        return $this->belongsTo(Category::class); // una subcategoria pertenece a una categoria (uno a uno)
+        parent::boot();
+        static::creating(fn ($m) => $m->slug ??= Str::slug($m->name));
+        static::updating(fn ($m) => $m->slug = Str::slug($m->name));
     }
 
-    public function products()
+    public function category(): BelongsTo
     {
-        return $this->hasMany(Product::class); // una subcategoria puede tener muchos productos (uno a muchos)
+        return $this->belongsTo(Category::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
     }
 }

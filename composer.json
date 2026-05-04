@@ -37,6 +37,10 @@
         }
     },
     "scripts": {
+        "format": [
+            "./vendor/bin/pint",
+            "blade-formatter -w resources/views/**/*.blade.php"
+        ],
         "setup": [
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",

@@ -2,36 +2,92 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'sku',
-        'name',
-        'description',
-        'image_path',
-        'price',
-        'subcategory_id'
+        'subcategory_id', 'name', 'slug', 'description', 'short_description',
+        'price', 'compare_price', 'stock', 'low_stock_threshold',
+        'sku', 'barcode', 'weight', 'images', 'active', 'featured', 'order',
     ];
 
-    public function subcategory()
+    protected $casts = [
+        'price' => 'decimal:2',
+        'compare_price' => 'decimal:2',
+        'images' => 'array',
+        'active' => 'boolean',
+        'featured' => 'boolean',
+    ];
+
+    protected static function boot(): void
     {
-        return $this->belongsTo(Subcategory::class); // un producto pertenece a una subcategoria (uno a uno)
+        parent::boot();
+        static::creating(fn ($m) => $m->slug ??= Str::slug($m->name));
+        static::updating(fn ($m) => $m->slug = Str::slug($m->name));
     }
 
-    public function variants()
+    public function subcategory(): BelongsTo
     {
-        return $this->hasMany(Variant::class); // un producto puede tener muchas variantes (uno a muchos)
+        return $this->belongsTo(Subcategory::class);
     }
 
-    public function options()
+    public function orderItems(): HasMany
     {
-        return $this->belongsToMany(Option::class)
-            ->withPivot('value') // recuperar el value de la tabla intermedia option_product
-            ->withTimestamps(); // un producto puede tener muchas opciones (muchos a muchos)
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function getMainImageAttribute(): string
+    {
+        return ($this->images[0] ?? null)
+            ? asset('storage/'.$this->images[0])
+            : asset('images/no-image.png');
+    }
+
+    public function getDiscountPercentageAttribute(): ?int
+    {
+        if ($this->compare_price && $this->compare_price > $this->price) {
+            return round((1 - $this->price / $this->compare_price) * 100);
+        }
+
+        return null;
+    }
+
+    public function getIsLowStockAttribute(): bool
+    {
+        return $this->stock > 0 && $this->stock <= $this->low_stock_threshold;
+    }
+
+    public function getIsOutOfStockAttribute(): bool
+    {
+        return $this->stock <= 0;
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true);
+    }
+
+    public function scopeLowStock($query)
+    {
+        return $query->whereRaw('stock > 0 AND stock <= low_stock_threshold');
+    }
+
+    public function scopeOutOfStock($query)
+    {
+        return $query->where('stock', '<=', 0);
     }
 }

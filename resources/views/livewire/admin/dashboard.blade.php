@@ -1,0 +1,146 @@
+<x-slot name="title">Dashboard</x-slot>
+
+<div class="space-y-6">
+
+    {{-- Metrics --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </div>
+            <p class="text-2xl font-semibold text-gray-900">${{ number_format($metrics['sales'], 0, ',', '.') }}</p>
+            <p class="text-xs text-gray-500 mt-1">Ventas del mes</p>
+            <p class="text-xs mt-2 {{ $metrics['sales_delta'] >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                {{ $metrics['sales_delta'] >= 0 ? '▲' : '▼' }} {{ abs($metrics['sales_delta']) }}% vs mes anterior
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-bag-shopping text-green-600"></i>
+            </div>
+            <p class="text-2xl font-semibold text-gray-900">{{ number_format($metrics['orders']) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Pedidos del mes</p>
+            <p class="text-xs mt-2 {{ $metrics['orders_delta'] >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                {{ $metrics['orders_delta'] >= 0 ? '▲' : '▼' }} {{ abs($metrics['orders_delta']) }}% vs mes anterior
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-user-check text-amber-600"></i>
+            </div>
+            <p class="text-2xl font-semibold text-gray-900">{{ number_format($metrics['clients']) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Clientes nuevos</p>
+            <p class="text-xs text-gray-400 mt-2">Este mes</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-triangle-exclamation text-red-500"></i>
+            </div>
+            <p class="text-2xl font-semibold text-gray-900">{{ $metrics['low_stock'] }}</p>
+            <p class="text-xs text-gray-500 mt-1">Productos stock bajo</p>
+            <p class="text-xs text-red-500 mt-2">{{ $metrics['out_of_stock'] }} sin stock</p>
+        </div>
+    </div>
+
+    {{-- Charts row --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        {{-- Weekly sales bar chart (Alpine.js) --}}
+        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5">
+            <h3 class="text-sm font-semibold text-gray-700 mb-4">Ventas últimos 7 días</h3>
+            @php $maxSale = collect($weeklySales)->max('total') ?: 1; @endphp
+            <div class="flex items-end gap-2 h-32">
+                @foreach ($weeklySales as $day)
+                    @php $pct = ($day['total'] / $maxSale) * 100; @endphp
+                    <div class="flex-1 flex flex-col items-center gap-1">
+                        <span
+                            class="text-xs text-gray-400">${{ $day['total'] > 0 ? number_format($day['total'] / 1000, 1) . 'k' : '0' }}</span>
+                        <div class="w-full rounded-t-md bg-indigo-500 hover:bg-indigo-600 transition-colors cursor-default"
+                            style="height: {{ max($pct, 4) }}%"></div>
+                        <span class="text-xs text-gray-400">{{ $day['day'] }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Low stock --}}
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold text-gray-700">Stock crítico</h3>
+                <a href="{{ route('admin.products') }}?stockFilter=low"
+                    class="text-xs text-indigo-600 hover:underline">Ver todos</a>
+            </div>
+            <div class="space-y-3">
+                @forelse($lowStockProducts as $product)
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-gray-800 truncate">{{ $product['name'] }}</p>
+                            <p class="text-xs text-gray-400">{{ $product['category'] }}</p>
+                        </div>
+                        <span
+                            class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full
+                            {{ $product['is_out'] ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700' }}">
+                            {{ $product['stock'] }} uds.
+                        </span>
+                    </div>
+                @empty
+                    <p class="text-sm text-gray-400">Sin productos críticos</p>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    {{-- Recent orders --}}
+    <div class="bg-white rounded-xl border border-gray-200">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-700">Últimos pedidos</h3>
+            <a href="{{ route('admin.orders') }}" class="text-xs text-indigo-600 hover:underline">Ver todos</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-xs text-gray-500 border-b border-gray-100">
+                        <th class="text-left px-5 py-3">Pedido</th>
+                        <th class="text-left px-5 py-3">Cliente</th>
+                        <th class="text-left px-5 py-3">Estado</th>
+                        <th class="text-right px-5 py-3">Total</th>
+                        <th class="text-right px-5 py-3">Hace</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($recentOrders as $order)
+                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                            <td class="px-5 py-3 font-mono text-xs font-medium text-indigo-700">
+                                <a
+                                    href="{{ route('admin.orders') }}?search={{ $order['number'] }}">{{ $order['number'] }}</a>
+                            </td>
+                            <td class="px-5 py-3 text-gray-700">{{ $order['customer'] }}</td>
+                            <td class="px-5 py-3">
+                                @php
+                                    $colors = [
+                                        'pending' => 'bg-amber-100 text-amber-700',
+                                        'processing' => 'bg-blue-100 text-blue-700',
+                                        'shipped' => 'bg-purple-100 text-purple-700',
+                                        'delivered' => 'bg-green-100 text-green-700',
+                                        'cancelled' => 'bg-red-100 text-red-700',
+                                        'refunded' => 'bg-gray-100 text-gray-600',
+                                    ];
+                                @endphp
+                                <span
+                                    class="text-xs px-2 py-0.5 rounded-full {{ $colors[$order['status']] ?? 'bg-gray-100 text-gray-600' }}">
+                                    {{ $order['status_label'] }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-3 text-right font-medium">
+                                ${{ number_format($order['total'], 0, ',', '.') }}</td>
+                            <td class="px-5 py-3 text-right text-gray-400 text-xs">{{ $order['created_at'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

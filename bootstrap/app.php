@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,16 +15,32 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
-        then: function() { // registrar un nuevo archivo de ruta de tipo web
-            Route::middleware('web', 'auth') // el middleware auth permite el acceso a la ruta solo para usuarios autenticados
-                ->prefix('admin') // prefijo de las rutas
-                ->name('admin.') // especificar el prefijo del nombre de las rutas
-                ->group(base_path('routes/admin.php')); // ruta donde se localiza el archivo de rutas
-        }
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // registra el alias de 'admin' para el middleware
+        $middleware->alias([
+            'admin' => AdminMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Ruta no encontrada → 404
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if (! $request->expectsJson()) {
+                return response()->view('errors.404', [], 404);
+            }
+        });
+
+        // ModelNotFoundException → 404
+        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+            if (! $request->expectsJson()) {
+                return response()->view('errors.404', [], 404);
+            }
+        });
+
+        // Acceso denegado → 403
+        $exceptions->render(function (AccessDeniedHttpException $e, Request $request) {
+            if (! $request->expectsJson()) {
+                return response()->view('errors.403', [], 403);
+            }
+        });
     })->create();

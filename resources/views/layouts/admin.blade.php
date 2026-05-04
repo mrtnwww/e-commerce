@@ -1,76 +1,239 @@
-@props(['breadcrumbs' => []])
-
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="es">
+
+{{-- Google Fonts - Lato --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap"
+    rel="stylesheet">
+
+{{-- Font Awesome --}}
+<script src="https://kit.fontawesome.com/0bb6fe9eb2.js" crossorigin="anonymous"></script>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    {{-- Font Awesome --}}
-    <script src="https://kit.fontawesome.com/2d470a23f4.js" crossorigin="anonymous"></script>
-
-    {{-- Swal --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Scripts -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Panel
+        Administrativo
+        —
+        {{ config('app.name') }}
+    </title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- Styles -->
     @livewireStyles
+    <style>
+        .sidebar {
+            transition: width 300ms ease;
+        }
+
+        .sidebar-fade {
+            transition: opacity 200ms ease, max-width 250ms ease;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
-<body class="font-sans antialiased" x-data="{ siderbarOpen: false }" :class="{
-    'overflow-y-hidden': siderbarOpen
-}">
-    <div class="fixed inset-0 bg-gray-900 opacity-50 z-20 sm:hidden" style="display: none;" x-show="siderbarOpen"
-        @click="siderbarOpen = false"></div>
-    @include('layouts.partials.admin.navigation')
-    @include('layouts.partials.admin.siderbar')
+<body class="bg-gray-50 text-gray-900 antialiased" x-data="{ open: true }">
 
-    <div class="p-4 h-max-screen dark:bg-gray-900 sm:ml-64">
-        <div class="mt-14">
-            <div class="flex justify-between items-center">
-                @include('layouts.partials.admin.breadcrumb')
+    <div class="flex h-screen overflow-hidden">
 
-                @isset($action)
-                    <div>
-                        {{ $action }}
+        {{-- ── SIDEBAR ──────────────────────────────────── --}}
+        <aside class="sidebar shrink-0 bg-slate-900 flex flex-col overflow-hidden"
+            :style="open ? 'width:224px' : 'width:64px'">
+
+            {{-- Logo --}}
+            <div class="px-4 py-5 border-b border-slate-700 flex items-center gap-3 overflow-hidden">
+                <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
+                    </svg>
+                </div>
+                <span class="sidebar-fade text-white font-semibold text-sm"
+                    :style="open ?
+                        'opacity:1;max-width:200px' :
+                        'opacity:0;max-width:0'">
+                    {{ config('app.name') }}
+                </span>
+            </div>
+
+            {{-- Nav --}}
+            <nav class="flex-1 py-3 overflow-y-auto overflow-x-hidden px-2 space-y-0.5">
+                @php
+                    $pendingOrders = \App\Models\Order::byStatus('pending')->count();
+                    $sections = [
+                        'Principal' => [
+                            [
+                                'route' => 'admin.dashboard',
+                                'label' => 'Dashboard',
+                                'icon' => 'fa-solid fa-border-all',
+                            ],
+                            [
+                                'route' => 'admin.orders',
+                                'label' => 'Pedidos',
+                                'icon' => 'fa-solid fa-bag-shopping',
+                                'badge' => $pendingOrders,
+                            ],
+                            [
+                                'route' => 'admin.customers',
+                                'label' => 'Clientes',
+                                'icon' => 'fa-solid fa-user-group',
+                            ],
+                        ],
+                        'Catálogo' => [
+                            [
+                                'route' => 'admin.products',
+                                'label' => 'Productos',
+                                'icon' => 'fa-solid fa-box-open',
+                            ],
+                            [
+                                'route' => 'admin.families',
+                                'label' => 'Familias',
+                                'icon' => 'fa-solid fa-layer-group',
+                            ],
+                            [
+                                'route' => 'admin.categories',
+                                'label' => 'Categorías',
+                                'icon' => 'fa-solid fa-tag',
+                            ],
+                            [
+                                'route' => 'admin.subcategories',
+                                'label' => 'Subcategorías',
+                                'icon' => 'fa-solid fa-tags',
+                            ],
+                        ],
+                        'Tienda' => [
+                            [
+                                'route' => 'admin.discounts',
+                                'label' => 'Descuentos',
+                                'icon' => 'fa-solid fa-ticket-simple',
+                            ],
+                            [
+                                'route' => 'admin.banners',
+                                'label' => 'Banners',
+                                'icon' => 'fa-regular fa-images',
+                            ],
+                        ],
+                        'Configuración' => [
+                            [
+                                'route' => 'admin.settings',
+                                'label' => 'Opciones',
+                                'icon' => 'fa-solid fa-gear',
+                            ],
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($sections as $sectionLabel => $items)
+                    {{-- Section title --}}
+                    <div class="overflow-hidden"
+                        :style="open ?
+                            'max-height:32px;opacity:1;margin-top:12px' :
+                            'max-height:0;opacity:0;margin-top:0'"
+                        style="transition:max-height 250ms ease,opacity 200ms ease,margin-top 250ms ease">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest px-2 pb-1">
+                            {{ $sectionLabel }}
+                        </p>
                     </div>
-                @endisset
+
+                    @foreach ($items as $item)
+                        @php $active = request()->routeIs($item['route']); @endphp
+                        <a href="{{ route($item['route']) }}" title="{{ $item['label'] }}"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors
+                              {{ $active
+                                  ? 'bg-indigo-600/20 text-indigo-300 border-l-2 border-indigo-500'
+                                  : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="{{ $item['icon'] }}"></i>
+                            <span class="sidebar-fade flex-1"
+                                :style="open ?
+                                    'opacity:1;max-width:200px' :
+                                    'opacity:0;max-width:0'">
+                                {{ $item['label'] }}
+                            </span>
+                            @if (!empty($item['badge']) && $item['badge'] > 0)
+                                <span
+                                    class="sidebar-fade ml-auto bg-red-500 text-white text-xs font-bold
+                                         rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
+                                    :style="open ?
+                                        'opacity:1;max-width:40px' :
+                                        'opacity:0;max-width:0'">
+                                    {{ $item['badge'] > 99 ? '99+' : $item['badge'] }}
+                                </span>
+                            @endif
+                        </a>
+                    @endforeach
+                @endforeach
+            </nav>
+
+            {{-- User footer --}}
+            <div class="border-t border-slate-700 px-3 py-3 flex items-center gap-3 overflow-hidden">
+                <div
+                    class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center
+                        text-white text-xs font-bold shrink-0">
+                    {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 2)) }}
+                </div>
+                <div class="sidebar-fade flex-1 min-w-0"
+                    :style="open ?
+                        'opacity:1;max-width:200px' :
+                        'opacity:0;max-width:0'">
+                    <p class="text-sm text-white font-medium truncate">
+                        {{ Auth::user()->name ?? 'Admin' }}
+                    </p>
+                    <a href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        class="text-xs text-slate-400 hover:text-red-400 transition-colors">
+                        Cerrar
+                        sesión
+                    </a>
+                    <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
+                        @csrf
+                    </form>
+                </div>
             </div>
-            <div class="p-4 border-2 border-gray-200 border-dashed rounded-base">
+
+        </aside>
+
+        {{-- ── MAIN ─────────────────────────────────────── --}}
+        <div class="flex-1 flex flex-col overflow-hidden min-w-0">
+
+            {{-- Topbar --}}
+            <header class="bg-white border-b border-gray-200 px-5 py-3 flex items-center gap-4 shrink-0">
+                <button @click="open = !open"
+                    class="text-gray-400 hover:text-gray-700 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="text-base font-semibold text-gray-800 flex-1">
+                    {{ $title ?? 'Dashboard' }}
+                </h1>
+                <a href="{{ route('shop') }}" target="_blank"
+                    class="text-xs text-indigo-600 hover:text-indigo-800 transition-colors">
+                    Ver
+                    tienda
+                    <i class="fa-solid fa-shop"></i>
+                </a>
+            </header>
+
+            {{-- Toast --}}
+            <div x-data="{ show: false, message: '' }"
+                x-on:notify.window="message = $event.detail.message; show = true; setTimeout(() => show = false, 3500)"
+                x-show="show" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-end="opacity-0"
+                class="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-xl text-sm flex items-center gap-2"
+                style="display:none">
+                <span class="text-green-400">✓</span>
+                <span x-text="message"></span>
+            </div>
+
+            {{-- Content --}}
+            <main class="flex-1 overflow-y-auto p-6">
                 {{ $slot }}
-            </div>
+            </main>
         </div>
     </div>
 
     @livewireScripts
-
-    {{-- recibir codigo js enviado ejecutado desde las vistas hijas
-        ** El codigo es enviado a traves de la notacion @push('js')...@endpush() --}}
-    @stack('js')
-
-    {{-- validar que exista el valor `swal` en la session --}}
-    @if (session('swal'))
-        <script>
-            Swal.fire({!! json_encode(session('swal')) !!});
-        </script>
-    @endif
-
-    {{-- escuchar eventos de un componente de Livewire --}}
-    <script>
-        Livewire.on('swal', data => {
-            Swal.fire(data[0])
-        })
-    </script>
 </body>
 
 </html>

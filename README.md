@@ -1,11 +1,34 @@
-# Laravel e-commerce
+# LIBRERIAS
+
+## jetstream starter kit
+
+Provee implementaciones para login, registro, verificacion de email, 2fa autenticación.
 
 ```bash
-composer create-project laravel/laravel e-commerce
+composer require laravel/jetstream
 ```
 
-## Componentes de la vista
+## livewire
 
-### Flowbite
+Permite construir interfaces dinamicas y reactivas usando solo PHP.
 
-[Sidebar with navbar](https://flowbite.com/docs/components/sidebar/#sidebar-with-navbar)
+```bash
+php artisan jetstream:livewire
+```
+
+## laravel lang
+
+Cambiar el idioma por defecto de las vistas
+
+```bash
+composer require laravel-lang/common
+php artisan lang:add es
+```
+
+### FrontEnd
+
+## SweetAlert
+
+```bash
+npm install sweetalert2
+```
