@@ -6,7 +6,8 @@
             class="flex-1 min-w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <button wire:click="openCreate"
             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            + Nueva familia
+            <i class="fa-solid fa-plus"></i>
+            <span>Nueva familia</span>
         </button>
     </div>
 
@@ -72,49 +73,43 @@
 
     {{-- Form modal --}}
     @if ($showForm)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div class="bg-white rounded-2xl w-full max-w-md shadow-xl">
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <h2 class="font-semibold text-gray-800">{{ $editId ? 'Editar' : 'Nueva' }} familia</h2>
-                    <button wire:click="$set('showForm', false)" class="text-gray-400 hover:text-gray-600">✕</button>
+        <x-modal title="{{ $editId ? 'Editar' : 'Nueva' }} familia" maxWidth="max-w-2xl">
+            <form wire:submit="save" class="space-y-4">
+                <div>
+                    <label class="text-xs font-medium text-gray-600">Nombre *</label>
+                    <input wire:model="name" type="text"
+                        class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('name') border-red-400 @enderror">
+                    @error('name')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-                <form wire:submit="save" class="p-6 space-y-4">
-                    <div>
-                        <label class="text-xs font-medium text-gray-600">Nombre *</label>
-                        <input wire:model="name" type="text"
-                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('name') border-red-400 @enderror">
-                        @error('name')
-                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="text-xs font-medium text-gray-600">Descripción</label>
-                        <textarea wire:model="description" rows="3"
-                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-                    </div>
-                    <div>
-                        <label class="text-xs font-medium text-gray-600">Imagen</label>
-                        <input wire:model="image" type="file" accept="image/*"
-                            class="mt-1 w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700">
-                        <div wire:loading wire:target="image" class="text-xs text-indigo-600 mt-1">Cargando...</div>
-                    </div>
-                    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                        <input wire:model="active" type="checkbox" class="rounded border-gray-300 text-indigo-600">
-                        Activa
-                    </label>
-                    <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
-                        <button type="button" wire:click="$set('showForm', false)"
-                            class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            Cancelar
-                        </button>
-                        <button type="submit"
-                            class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
-                            {{ $editId ? 'Actualizar' : 'Crear' }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div>
+                    <label class="text-xs font-medium text-gray-600">Descripción</label>
+                    <textarea wire:model="description" rows="3"
+                        class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-gray-600">Imagen</label>
+                    <input wire:model="image" type="file" accept="image/*"
+                        class="mt-1 w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700">
+                    <div wire:loading wire:target="image" class="text-xs text-indigo-600 mt-1">Cargando...</div>
+                </div>
+                <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input wire:model="active" type="checkbox" class="rounded border-gray-300 text-indigo-600">
+                    Activa
+                </label>
+                <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
+                    <button type="button" wire:click="$set('showForm', false)"
+                        class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
+                        {{ $editId ? 'Actualizar' : 'Crear familia' }}
+                    </button>
+                </div>
+            </form>
+        </x-modal>
     @endif
 
     {{-- Delete confirm --}}

@@ -134,6 +134,11 @@ class DiscountIndex extends Component
         $this->resetValidation();
     }
 
+    public function closeModal(): void
+    {
+        $this->showForm = false;
+    }
+
     public function getDiscountsProperty()
     {
         return Discount::when($this->search, fn ($q) => $q->where('code', 'like', "%{$this->search}%"))

@@ -66,7 +66,7 @@
                             @endif
                         </th>
                         <th class="text-right px-5 py-3 cursor-pointer hover:text-gray-800"
-                            wire:click="sortBy('created_at')">
+                            wire:click="handleSortBy('created_at')">
                             Fecha @if ($sortBy === 'created_at')
                                 {{ $sortDir === 'asc' ? '↑' : '↓' }}
                             @endif

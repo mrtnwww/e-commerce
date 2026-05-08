@@ -195,6 +195,11 @@ class ProductIndex extends Component
         $this->resetValidation();
     }
 
+    public function closeModal(): void
+    {
+        $this->showForm = false;
+    }
+
     public function getProductsProperty()
     {
         return Product::with('subcategory.category')

@@ -137,6 +137,11 @@ class BannerIndex extends Component
         $this->resetValidation();
     }
 
+    public function closeModal(): void
+    {
+        $this->showForm = false;
+    }
+
     public function render()
     {
         return view('livewire.admin.banner-index', [

@@ -29,7 +29,7 @@ class CustomerIndex extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $column): void
+    public function handleSortBy(string $column): void
     {
         $this->sortDir = $this->sortBy === $column && $this->sortDir === 'asc' ? 'desc' : 'asc';
         $this->sortBy = $column;

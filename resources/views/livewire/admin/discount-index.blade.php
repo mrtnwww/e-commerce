@@ -6,7 +6,8 @@
             class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <button wire:click="openCreate"
             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            + Nuevo cupón
+            <i class="fa-solid fa-plus"></i>
+            <span>Nuevo cupón</span>
         </button>
     </div>
 
@@ -68,70 +69,64 @@
     </div>
 
     @if ($showForm)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div class="bg-white rounded-2xl w-full max-w-md shadow-xl">
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <h2 class="font-semibold text-gray-800">{{ $editId ? 'Editar' : 'Nuevo' }} cupón</h2>
-                    <button wire:click="$set('showForm', false)" class="text-gray-400 hover:text-gray-600">✕</button>
+        <x-modal title="{{ $editId ? 'Editar' : 'Nuevo' }} cupón" maxWidth="max-w-lg">
+            <form wire:submit="save" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="text-xs font-medium text-gray-600">Código *</label>
+                        <input wire:model="code" type="text" placeholder="VERANO20"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('code') border-red-400 @enderror">
+                        @error('code')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Tipo *</label>
+                        <select wire:model="type"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="percentage">Porcentaje (%)</option>
+                            <option value="fixed">Valor fijo ($)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Valor *</label>
+                        <input wire:model="value" type="number" step="0.01" min="0"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('value') border-red-400 @enderror">
+                        @error('value')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Pedido mínimo</label>
+                        <input wire:model="minimumOrder" type="number" min="0" placeholder="0"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Máximo de usos</label>
+                        <input wire:model="maxUses" type="number" min="1" placeholder="Ilimitado"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="text-xs font-medium text-gray-600">Fecha de vencimiento</label>
+                        <input wire:model="expiresAt" type="date"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('expiresAt') border-red-400 @enderror">
+                        @error('expiresAt')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                        <input wire:model="active" type="checkbox" class="rounded border-gray-300 text-indigo-600">
+                        Activo
+                    </label>
                 </div>
-                <form wire:submit="save" class="p-6 space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2">
-                            <label class="text-xs font-medium text-gray-600">Código *</label>
-                            <input wire:model="code" type="text" placeholder="VERANO20"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('code') border-red-400 @enderror">
-                            @error('code')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Tipo *</label>
-                            <select wire:model="type"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="percentage">Porcentaje (%)</option>
-                                <option value="fixed">Valor fijo ($)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Valor *</label>
-                            <input wire:model="value" type="number" step="0.01" min="0"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('value') border-red-400 @enderror">
-                            @error('value')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Pedido mínimo</label>
-                            <input wire:model="minimumOrder" type="number" min="0" placeholder="0"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Máximo de usos</label>
-                            <input wire:model="maxUses" type="number" min="1" placeholder="Ilimitado"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div class="col-span-2">
-                            <label class="text-xs font-medium text-gray-600">Fecha de vencimiento</label>
-                            <input wire:model="expiresAt" type="date"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('expiresAt') border-red-400 @enderror">
-                            @error('expiresAt')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                            <input wire:model="active" type="checkbox" class="rounded border-gray-300 text-indigo-600">
-                            Activo
-                        </label>
-                    </div>
-                    <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
-                        <button type="button" wire:click="$set('showForm', false)"
-                            class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
-                        <button type="submit"
-                            class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium">{{ $editId ? 'Actualizar' : 'Crear' }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
+                    <button type="button" wire:click="$set('showForm', false)"
+                        class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium">{{ $editId ? 'Actualizar' : 'Crear' }}</button>
+                </div>
+            </form>
+        </x-modal>
     @endif
 
     @if ($confirmDelete)

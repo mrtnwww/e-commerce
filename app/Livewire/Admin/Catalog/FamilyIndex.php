@@ -114,6 +114,11 @@ class FamilyIndex extends Component
         $this->resetValidation();
     }
 
+    public function closeModal(): void
+    {
+        $this->showForm = false;
+    }
+
     public function getFamiliesProperty()
     {
         return Family::withCount('categories')

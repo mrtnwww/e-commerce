@@ -40,7 +40,7 @@ class OrderIndex extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $column): void
+    public function handleSortBy(string $column): void
     {
         if ($this->sortBy === $column) {
             $this->sortDir = $this->sortDir === 'asc' ? 'desc' : 'asc';

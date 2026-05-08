@@ -79,7 +79,8 @@
                         </a>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button class="text-sm opacity-80 text-red-500 hover:text-red-600" type="submit">Cerrar
+                            <button class="text-sm text-slate-400 hover:text-red-400 transition-colors"
+                                type="submit">Cerrar
                                 sesión</button>
                         </form>
                     @else

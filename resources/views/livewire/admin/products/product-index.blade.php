@@ -8,7 +8,7 @@
             class="flex-1 min-w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
 
         <select wire:model.live="subcategory"
-            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="">Todas las subcategorías</option>
             @foreach ($subcategories as $sub)
                 <option value="{{ $sub->id }}">{{ $sub->category->name }} › {{ $sub->name }}</option>
@@ -16,7 +16,7 @@
         </select>
 
         <select wire:model.live="stockFilter"
-            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="">Todo el stock</option>
             <option value="low">Stock bajo</option>
             <option value="out">Sin stock</option>
@@ -24,7 +24,8 @@
 
         <button wire:click="openCreate"
             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
-            <span>+</span> Nuevo producto
+            <i class="fa-solid fa-plus"></i>
+            <span>Nuevo producto</span>
         </button>
     </div>
 
@@ -114,118 +115,112 @@
 
     {{-- Product form modal --}}
     @if ($showForm)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <h2 class="font-semibold text-gray-800">{{ $editId ? 'Editar producto' : 'Nuevo producto' }}</h2>
-                    <button wire:click="$set('showForm', false)" class="text-gray-400 hover:text-gray-600">✕</button>
+        <x-modal title="{{ $editId ? 'Editar' : 'Nuevo' }} producto" maxWidth="max-w-2xl">
+            <form wire:submit="save">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="text-xs font-medium text-gray-600">Nombre *</label>
+                        <input wire:model="name" type="text"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('name') border-red-400 @enderror">
+                        @error('name')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Precio *</label>
+                        <input wire:model="price" type="number" step="0.01" min="0"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('price') border-red-400 @enderror">
+                        @error('price')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Precio anterior (tachado)</label>
+                        <input wire:model="comparePrice" type="number" step="0.01" min="0"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Stock *</label>
+                        <input wire:model="stock" type="number" min="0"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Alerta stock bajo</label>
+                        <input wire:model="lowStockThreshold" type="number" min="1"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">SKU</label>
+                        <input wire:model="sku" type="text"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('sku') border-red-400 @enderror">
+                        @error('sku')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-medium text-gray-600">Subcategoría</label>
+                        <select wire:model="subcategoryId"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Sin subcategoría</option>
+                            @foreach ($subcategories as $sub)
+                                <option value="{{ $sub->id }}">{{ $sub->category->name }} ›
+                                    {{ $sub->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="text-xs font-medium text-gray-600">Descripción corta</label>
+                        <textarea wire:model="shortDescription" rows="2"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="text-xs font-medium text-gray-600">Descripción completa</label>
+                        <textarea wire:model="description" rows="4"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="text-xs font-medium text-gray-600">Imágenes</label>
+                        <input wire:model="uploadedImages" type="file" multiple accept="image/*"
+                            class="mt-1 w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                        <div wire:loading wire:target="uploadedImages" class="text-xs text-indigo-600 mt-1">
+                            Cargando imágenes...</div>
+                    </div>
+
+                    <div class="flex items-center gap-6">
+                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                            <input wire:model="active" type="checkbox"
+                                class="rounded border-gray-300 text-indigo-600">
+                            Activo
+                        </label>
+                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                            <input wire:model="featured" type="checkbox"
+                                class="rounded border-gray-300 text-indigo-600">
+                            Destacado
+                        </label>
+                    </div>
                 </div>
-                <form wire:submit="save" class="p-6 space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2">
-                            <label class="text-xs font-medium text-gray-600">Nombre *</label>
-                            <input wire:model="name" type="text"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('name') border-red-400 @enderror">
-                            @error('name')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
 
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Precio *</label>
-                            <input wire:model="price" type="number" step="0.01" min="0"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('price') border-red-400 @enderror">
-                            @error('price')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Precio anterior (tachado)</label>
-                            <input wire:model="comparePrice" type="number" step="0.01" min="0"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Stock *</label>
-                            <input wire:model="stock" type="number" min="0"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Alerta stock bajo</label>
-                            <input wire:model="lowStockThreshold" type="number" min="1"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">SKU</label>
-                            <input wire:model="sku" type="text"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('sku') border-red-400 @enderror">
-                            @error('sku')
-                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-medium text-gray-600">Subcategoría</label>
-                            <select wire:model="subcategoryId"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="">Sin subcategoría</option>
-                                @foreach ($subcategories as $sub)
-                                    <option value="{{ $sub->id }}">{{ $sub->category->name }} ›
-                                        {{ $sub->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-span-2">
-                            <label class="text-xs font-medium text-gray-600">Descripción corta</label>
-                            <textarea wire:model="shortDescription" rows="2"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-                        </div>
-
-                        <div class="col-span-2">
-                            <label class="text-xs font-medium text-gray-600">Descripción completa</label>
-                            <textarea wire:model="description" rows="4"
-                                class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-                        </div>
-
-                        <div class="col-span-2">
-                            <label class="text-xs font-medium text-gray-600">Imágenes</label>
-                            <input wire:model="uploadedImages" type="file" multiple accept="image/*"
-                                class="mt-1 w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                            <div wire:loading wire:target="uploadedImages" class="text-xs text-indigo-600 mt-1">
-                                Cargando imágenes...</div>
-                        </div>
-
-                        <div class="flex items-center gap-6">
-                            <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                                <input wire:model="active" type="checkbox"
-                                    class="rounded border-gray-300 text-indigo-600">
-                                Activo
-                            </label>
-                            <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                                <input wire:model="featured" type="checkbox"
-                                    class="rounded border-gray-300 text-indigo-600">
-                                Destacado
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
-                        <button type="button" wire:click="$set('showForm', false)"
-                            class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            Cancelar
-                        </button>
-                        <button type="submit"
-                            class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
-                            {{ $editId ? 'Actualizar' : 'Crear producto' }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
+                    <button type="button" wire:click="$set('showForm', false)"
+                        class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
+                        {{ $editId ? 'Actualizar' : 'Crear producto' }}
+                    </button>
+                </div>
+            </form>
+        </x-modal>
     @endif
 
     {{-- Delete confirm --}}

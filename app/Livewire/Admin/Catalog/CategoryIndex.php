@@ -126,6 +126,11 @@ class CategoryIndex extends Component
         $this->resetValidation();
     }
 
+    public function closeModal(): void
+    {
+        $this->showForm = false;
+    }
+
     public function getCategoriesProperty()
     {
         return Category::with('family')
