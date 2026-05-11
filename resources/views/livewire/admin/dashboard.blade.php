@@ -111,7 +111,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($recentOrders as $order)
+                    @forelse ($recentOrders as $order)
                         <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                             <td class="px-5 py-3 font-mono text-xs font-medium text-indigo-700">
                                 <a
@@ -138,7 +138,12 @@
                                 ${{ number_format($order['total'], 0, ',', '.') }}</td>
                             <td class="px-5 py-3 text-right text-gray-400 text-xs">{{ $order['created_at'] }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-5 py-12 text-center text-gray-400">No se encontraron pedidos.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

@@ -60,6 +60,7 @@ class ProductIndex extends Component
     protected $queryString = [
         'search' => ['except' => ''],
         'subcategory' => ['except' => ''],
+        'stockFilter' => ['except' => ''],
     ];
 
     protected function rules(): array
@@ -141,7 +142,7 @@ class ProductIndex extends Component
 
         if ($this->editId) {
             $product = Product::findOrFail($this->editId);
-            if (! empty($images)) {
+            if (!empty($images)) {
                 $data['images'] = array_merge($product->images ?? [], $images);
             }
             $product->update($data);
