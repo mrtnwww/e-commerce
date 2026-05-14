@@ -136,74 +136,67 @@
 
     {{-- Order detail modal --}}
     @if ($showModal && $selectedOrder)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            x-on:keydown.escape.window="$wire.closeModal()">
-            <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <h2 class="font-semibold text-gray-800">Pedido {{ $selectedOrder->number }}</h2>
-                    <button wire:click="closeModal" class="text-gray-400 hover:text-gray-600">✕</button>
-                </div>
-                <div class="p-6 space-y-4">
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <p class="text-xs text-gray-500">Cliente</p>
-                            <p class="font-medium">{{ $selectedOrder->customer_name }}</p>
-                            <p class="text-gray-500">{{ $selectedOrder->customer_email }}</p>
-                            <p class="text-gray-500">{{ $selectedOrder->customer_phone }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Dirección de envío</p>
-                            <p class="font-medium">{{ $selectedOrder->shipping_address }}</p>
-                            <p class="text-gray-500">{{ $selectedOrder->shipping_city }},
-                                {{ $selectedOrder->shipping_department }}</p>
-                        </div>
-                    </div>
-
+        <x-modal title="Pedido {{ $selectedOrder->number }}" maxWidth="max-w-2xl">
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                        <p class="text-xs text-gray-500 mb-2">Productos</p>
-                        <table class="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
-                            <thead class="bg-gray-50 text-xs text-gray-500">
-                                <tr>
-                                    <th class="text-left px-4 py-2">Producto</th>
-                                    <th class="text-center px-4 py-2">Cant.</th>
-                                    <th class="text-right px-4 py-2">Precio</th>
-                                    <th class="text-right px-4 py-2">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($selectedOrder->items as $item)
-                                    <tr class="border-t border-gray-100">
-                                        <td class="px-4 py-2">{{ $item->product_name }}</td>
-                                        <td class="px-4 py-2 text-center">{{ $item->quantity }}</td>
-                                        <td class="px-4 py-2 text-right">
-                                            ${{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                        <td class="px-4 py-2 text-right font-medium">
-                                            ${{ number_format($item->total, 0, ',', '.') }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                        <p class="text-xs text-gray-500">Cliente</p>
+                        <p class="font-medium">{{ $selectedOrder->customer_name }}</p>
+                        <p class="text-gray-500">{{ $selectedOrder->customer_email }}</p>
+                        <p class="text-gray-500">{{ $selectedOrder->customer_phone }}</p>
                     </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Dirección de envío</p>
+                        <p class="font-medium">{{ $selectedOrder->shipping_address }}</p>
+                        <p class="text-gray-500">{{ $selectedOrder->shipping_city }},
+                            {{ $selectedOrder->shipping_department }}</p>
+                    </div>
+                </div>
 
-                    <div class="flex justify-end gap-8 text-sm border-t border-gray-100 pt-4">
-                        <div class="text-right space-y-1">
-                            <p class="text-gray-500">Subtotal: <span
-                                    class="text-gray-800">${{ number_format($selectedOrder->subtotal, 0, ',', '.') }}</span>
+                <div>
+                    <p class="text-xs text-gray-500 mb-2">Productos</p>
+                    <table class="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-50 text-xs text-gray-500">
+                            <tr>
+                                <th class="text-left px-4 py-2">Producto</th>
+                                <th class="text-center px-4 py-2">Cant.</th>
+                                <th class="text-right px-4 py-2">Precio</th>
+                                <th class="text-right px-4 py-2">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($selectedOrder->items as $item)
+                                <tr class="border-t border-gray-100">
+                                    <td class="px-4 py-2">{{ $item->product_name }}</td>
+                                    <td class="px-4 py-2 text-center">{{ $item->quantity }}</td>
+                                    <td class="px-4 py-2 text-right">
+                                        ${{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                    <td class="px-4 py-2 text-right font-medium">
+                                        ${{ number_format($item->total, 0, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-end gap-8 text-sm border-t border-gray-100 pt-4">
+                    <div class="text-right space-y-1">
+                        <p class="text-gray-500">Subtotal: <span
+                                class="text-gray-800">${{ number_format($selectedOrder->subtotal, 0, ',', '.') }}</span>
+                        </p>
+                        @if ($selectedOrder->discount > 0)
+                            <p class="text-gray-500">Descuento: <span
+                                    class="text-green-600">-${{ number_format($selectedOrder->discount, 0, ',', '.') }}</span>
                             </p>
-                            @if ($selectedOrder->discount > 0)
-                                <p class="text-gray-500">Descuento: <span
-                                        class="text-green-600">-${{ number_format($selectedOrder->discount, 0, ',', '.') }}</span>
-                                </p>
-                            @endif
-                            <p class="text-gray-500">Envío: <span
-                                    class="text-gray-800">${{ number_format($selectedOrder->shipping_cost, 0, ',', '.') }}</span>
-                            </p>
-                            <p class="font-semibold text-lg">Total:
-                                ${{ number_format($selectedOrder->total, 0, ',', '.') }}</p>
-                        </div>
+                        @endif
+                        <p class="text-gray-500">Envío: <span
+                                class="text-gray-800">${{ number_format($selectedOrder->shipping_cost, 0, ',', '.') }}</span>
+                        </p>
+                        <p class="font-semibold text-lg">Total:
+                            ${{ number_format($selectedOrder->total, 0, ',', '.') }}</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </x-modal>
     @endif
 </div>

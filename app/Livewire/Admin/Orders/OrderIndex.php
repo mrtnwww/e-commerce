@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Orders;
 
+use App\Livewire\Admin\PendingOrdersBadge;
 use App\Models\Order;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -73,6 +74,7 @@ class OrderIndex extends Component
             default => null,
         };
 
+        $this->dispatch('order-status-updated')->to(PendingOrdersBadge::class);
         $this->dispatch('notify', message: 'Estado actualizado correctamente');
     }
 
@@ -91,6 +93,7 @@ class OrderIndex extends Component
         return Order::selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status')
+            ->map(fn ($total) => (int) $total)
             ->toArray();
     }
 

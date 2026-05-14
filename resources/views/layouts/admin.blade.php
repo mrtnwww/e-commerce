@@ -16,8 +16,6 @@
     <title>
         Panel
         Administrativo
-        —
-        {{ config('app.name') }}
     </title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -37,18 +35,13 @@
 <body class="bg-gray-50 text-gray-900 antialiased" x-data="{ open: true }">
 
     <div class="flex h-screen overflow-hidden">
-
-        {{-- ── SIDEBAR ──────────────────────────────────── --}}
+        {{-- Menu lateral --}}
         <aside class="sidebar shrink-0 bg-slate-900 flex flex-col overflow-hidden"
             :style="open ? 'width:224px' : 'width:64px'">
-
             {{-- Logo --}}
             <div class="px-4 py-5 border-b border-slate-700 flex items-center gap-3 overflow-hidden">
                 <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
-                    </svg>
+                    <i class="fa-solid fa-cart-shopping text-white"></i>
                 </div>
                 <span class="sidebar-fade text-white font-semibold text-sm"
                     :style="open ?
@@ -58,10 +51,9 @@
                 </span>
             </div>
 
-            {{-- Nav --}}
+            {{-- Navegacion --}}
             <nav class="flex-1 py-3 overflow-y-auto overflow-x-hidden px-2 space-y-0.5">
                 @php
-                    $pendingOrders = \App\Models\Order::byStatus('pending')->count();
                     $sections = [
                         'Principal' => [
                             [
@@ -73,7 +65,6 @@
                                 'route' => 'admin.orders',
                                 'label' => 'Pedidos',
                                 'icon' => 'fa-solid fa-bag-shopping',
-                                'badge' => $pendingOrders,
                             ],
                             [
                                 'route' => 'admin.customers',
@@ -126,7 +117,6 @@
                 @endphp
 
                 @foreach ($sections as $sectionLabel => $items)
-                    {{-- Section title --}}
                     <div class="overflow-hidden"
                         :style="open ?
                             'max-height:32px;opacity:1;margin-top:12px' :
@@ -151,22 +141,16 @@
                                     'opacity:0;max-width:0'">
                                 {{ $item['label'] }}
                             </span>
-                            @if (!empty($item['badge']) && $item['badge'] > 0)
-                                <span
-                                    class="sidebar-fade ml-auto bg-red-500 text-white text-xs font-bold
-                                         rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
-                                    :style="open ?
-                                        'opacity:1;max-width:40px' :
-                                        'opacity:0;max-width:0'">
-                                    {{ $item['badge'] > 99 ? '99+' : $item['badge'] }}
-                                </span>
+                            @if ($item['route'] === 'admin.orders')
+                                {{-- Componente livewire para visualizar cantidad de pedidos pendientes --}}
+                                <livewire:admin.pending-orders-badge />
                             @endif
                         </a>
                     @endforeach
                 @endforeach
             </nav>
 
-            {{-- User footer --}}
+            {{-- Footer --}}
             <div class="border-t border-slate-700 px-3 py-3 flex items-center gap-3 overflow-hidden">
                 <div
                     class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center
@@ -180,6 +164,8 @@
                     <p class="text-sm text-white font-medium truncate">
                         {{ Auth::user()->name ?? 'Admin' }}
                     </p>
+
+                    {{-- Logout --}}
                     <a href="{{ route('logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="text-xs text-slate-400 hover:text-red-400 transition-colors">
@@ -191,14 +177,13 @@
                     </form>
                 </div>
             </div>
-
         </aside>
 
-        {{-- ── MAIN ─────────────────────────────────────── --}}
+        {{-- Vista del layout --}}
         <div class="flex-1 flex flex-col overflow-hidden min-w-0">
-
-            {{-- Topbar --}}
+            {{-- Barra superior --}}
             <header class="bg-white border-b border-gray-200 px-5 py-3 flex items-center gap-4 shrink-0">
+                {{-- Ocultar/Mostrar sidebar --}}
                 <button @click="open = !open"
                     class="text-gray-400 hover:text-gray-700 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
                     <i class="fa-solid fa-bars"></i>
@@ -215,18 +200,8 @@
             </header>
 
             {{-- Toast --}}
-            <div x-data="{ show: false, message: '' }"
-                x-on:notify.window="message = $event.detail.message; show = true; setTimeout(() => show = false, 3500)"
-                x-show="show" x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-150" x-transition:leave-end="opacity-0"
-                class="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-xl text-sm flex items-center gap-2"
-                style="display:none">
-                <span class="text-green-400">✓</span>
-                <span x-text="message"></span>
-            </div>
+            <x-toast />
 
-            {{-- Content --}}
             <main class="flex-1 overflow-y-auto p-6">
                 {{ $slot }}
             </main>
