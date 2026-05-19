@@ -249,12 +249,12 @@ Muestra las métricas clave de la tienda en tiempo real:
 | Ventas del mes | Suma total de pedidos no cancelados del mes actual con delta vs mes anterior |
 | Pedidos del mes | Cantidad de pedidos del mes actual con delta vs mes anterior |
 | Clientes nuevos | Usuarios registrados en el mes actual |
-| Stock bajo | Productos con stock ≤ umbral configurado en cada uno |
+| Stock bajo | Productos con stock ≤ umbral configurado |
 
 También incluye:
 - **Gráfico de barras** de ventas de los últimos 7 días
 - **Widget de stock crítico** con los productos con stock bajo
-- **Tabla de últimos 10 pedidos** con número de pedido, cliente, estado y total
+- **Tabla de últimos 5 pedidos** con número de pedido, cliente, estado y total
 
 ### Pedidos
 
@@ -265,9 +265,9 @@ Gestión completa de pedidos con:
 
 - **Búsqueda** por número de pedido, nombre o email del cliente
 - **Filtro por estado** con conteo por cada estado
-- **Ordenamiento** por número, cliente, total y fecha
+- **Ordenamiento** por fecha
 - **Cambio de estado inline** desde un select en la tabla
-- **Modal de detalle** con productos, dirección, montos y totales
+- **Modal de detalle** con información de productos, información del cliente, montos y totales
 
 **Estados disponibles:**
 
@@ -280,7 +280,7 @@ Gestión completa de pedidos con:
 | `cancelled` | Cancelado |
 | `refunded` | Reembolsado |
 
-Al cambiar a `shipped` o `delivered` se registra automáticamente la fecha correspondiente (`shipped_at`, `delivered_at`).
+Al cambiar el estado de un pedido a `shipped` o `delivered` se registra automáticamente la fecha correspondiente (`shipped_at`, `delivered_at`).
 
 ### Clientes
 

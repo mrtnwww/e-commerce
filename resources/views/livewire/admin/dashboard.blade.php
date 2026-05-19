@@ -2,7 +2,7 @@
 
 <div class="space-y-6">
 
-    {{-- Metrics --}}
+    {{-- Metricas --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
@@ -45,28 +45,46 @@
         </div>
     </div>
 
-    {{-- Charts row --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-        {{-- Weekly sales bar chart (Alpine.js) --}}
-        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5">
+        {{-- Grafica con las ventas de los últimos 7 dias --}}
+        <div class="flex flex-col justify-between bg-white rounded-xl border border-gray-200 p-5 lg:col-span-2">
             <h3 class="text-sm font-semibold text-gray-700 mb-4">Ventas últimos 7 días</h3>
-            @php $maxSale = collect($weeklySales)->max('total') ?: 1; @endphp
-            <div class="flex items-end gap-2 h-32">
+            @php
+                $maxSale = collect($weeklySales)->max('total') ?: 1;
+            @endphp
+
+            <div class="flex items-end gap-1">
                 @foreach ($weeklySales as $day)
-                    @php $pct = ($day['total'] / $maxSale) * 100; @endphp
+                    @php
+                        $hasData = $day['total'] > 0;
+                        $maxBarPx = $hasData ? 100 : 0;
+                        $barHeight = max(4, round(($day['total'] / $maxSale) * $maxBarPx));
+                        $label = $day['total'] > 0 ? '$' . number_format($day['total'] / 1000, 1) . 'k' : '$0';
+                    @endphp
                     <div class="flex-1 flex flex-col items-center gap-1">
-                        <span
-                            class="text-xs text-gray-400">${{ $day['total'] > 0 ? number_format($day['total'] / 1000, 1) . 'k' : '0' }}</span>
-                        <div class="w-full rounded-t-md bg-indigo-500 hover:bg-indigo-600 transition-colors cursor-default"
-                            style="height: {{ max($pct, 4) }}%"></div>
-                        <span class="text-xs text-gray-400">{{ $day['day'] }}</span>
+                        <div class="h-5 flex items-end">
+                            <span class="text-xs text-gray-400 leading-none">{{ $label }}</span>
+                        </div>
+
+                        {{-- Zona de barras --}}
+                        <div class="w-full flex items-end" style="height: {{ $maxBarPx }}px;">
+                            @if ($hasData)
+                                <div class="w-full rounded-t-md bg-indigo-500 hover:bg-indigo-600 transition-colors"
+                                    style="height: {{ $barHeight }}px"></div>
+                            @else
+                                <div class="w-full rounded-t-sm bg-indigo-200" style="height: 3px"></div>
+                            @endif
+                        </div>
+
+                        {{-- Día de la semana --}}
+                        <span class="text-xs text-gray-400 mt-1">{{ $day['day'] }}</span>
                     </div>
                 @endforeach
             </div>
         </div>
 
-        {{-- Low stock --}}
+        {{-- Productos con bajo stock --}}
         <div class="bg-white rounded-xl border border-gray-200 p-5">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-semibold text-gray-700">Stock crítico</h3>
@@ -93,7 +111,7 @@
         </div>
     </div>
 
-    {{-- Recent orders --}}
+    {{-- Pedidos recientes --}}
     <div class="bg-white rounded-xl border border-gray-200">
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 class="text-sm font-semibold text-gray-700">Últimos pedidos</h3>
