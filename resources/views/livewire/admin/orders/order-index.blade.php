@@ -2,11 +2,14 @@
 
 <div class="space-y-4">
 
-    {{-- Filters --}}
+    {{-- Filtros --}}
     <div class="bg-white rounded-xl border border-gray-200 p-4 flex flex-wrap items-center gap-3">
+
+        {{-- Filtro de busqueda con debounce de 300ms --}}
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="Buscar por #pedido, nombre o email..."
             class="flex-1 min-w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
 
+        {{-- Filtro por estado --}}
         <select wire:model.live="status"
             class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="">Todos los estados</option>
@@ -15,6 +18,7 @@
             @endforeach
         </select>
 
+        {{-- Pedidos por página --}}
         <select wire:model.live="perPage"
             class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="15">15 por página</option>
@@ -23,36 +27,19 @@
         </select>
     </div>
 
-    {{-- Status tabs --}}
-    <div class="flex gap-2 flex-wrap">
-        <button wire:click="$set('status', '')"
-            class="text-xs px-3 py-1.5 rounded-full border transition-colors
-                       {{ $status === '' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400' }}">
-            Todos
-        </button>
-        @foreach ($statuses as $key => $info)
-            <button wire:click="$set('status', '{{ $key }}')"
-                class="text-xs px-3 py-1.5 rounded-full border transition-colors
-                           {{ $status === $key ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400' }}">
-                {{ $info['label'] }} <span class="opacity-70">({{ $countsByStatus[$key] ?? 0 }})</span>
-            </button>
-        @endforeach
-    </div>
-
-    {{-- Table --}}
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-xs text-gray-500 bg-gray-50 border-b border-gray-200">
                         <th class="text-left px-5 py-3 cursor-pointer hover:text-gray-800"
-                            wire:click="sortBy('number')">
+                            wire:click="handleSortBy('number')">
                             # Pedido @if ($sortBy === 'number')
                                 {{ $sortDir === 'asc' ? '↑' : '↓' }}
                             @endif
                         </th>
                         <th class="text-left px-5 py-3 cursor-pointer hover:text-gray-800"
-                            wire:click="sortBy('customer_name')">
+                            wire:click="handleSortBy('customer_name')">
                             Cliente @if ($sortBy === 'customer_name')
                                 {{ $sortDir === 'asc' ? '↑' : '↓' }}
                             @endif
@@ -60,7 +47,7 @@
                         <th class="text-left px-5 py-3">Estado</th>
                         <th class="text-left px-5 py-3">Pago</th>
                         <th class="text-right px-5 py-3 cursor-pointer hover:text-gray-800"
-                            wire:click="sortBy('total')">
+                            wire:click="handleSortBy('total')">
                             Total @if ($sortBy === 'total')
                                 {{ $sortDir === 'asc' ? '↑' : '↓' }}
                             @endif
@@ -74,6 +61,8 @@
                         <th class="text-right px-5 py-3">Acciones</th>
                     </tr>
                 </thead>
+
+                {{-- Tabla de pedidos --}}
                 <tbody>
                     @forelse($orders as $order)
                         @php
@@ -94,9 +83,11 @@
                                 <p class="text-xs text-gray-400">{{ $order->customer_email }}</p>
                             </td>
                             <td class="px-5 py-3">
-                                <select wire:change="updateStatus({{ $order->id }}, $event.target.value)"
+                                {{-- [wire:key] para identificar cada select por id del pedido --}}
+                                <select wire:key="order-status{{ $order->id }}"
+                                    wire:change="updateStatus({{ $order->id }}, $event.target.value)"
                                     class="text-xs rounded-full px-2 py-1 border-0 cursor-pointer
-                                               {{ $statusColors[$order->status] ?? 'bg-gray-100 text-gray-600' }}">
+                                        {{ $statusColors[$order->status] ?? 'bg-gray-100 text-gray-600' }}">
                                     @foreach (\App\Models\Order::STATUSES as $key => $info)
                                         <option value="{{ $key }}"
                                             {{ $order->status === $key ? 'selected' : '' }}>
@@ -134,7 +125,7 @@
         </div>
     </div>
 
-    {{-- Order detail modal --}}
+    {{-- Modal detalle de pedido --}}
     @if ($showModal && $selectedOrder)
         <x-modal title="Pedido {{ $selectedOrder->number }}" maxWidth="max-w-2xl">
             <div class="space-y-4">

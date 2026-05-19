@@ -265,20 +265,20 @@ Gestión completa de pedidos con:
 
 - **Búsqueda** por número de pedido, nombre o email del cliente
 - **Filtro por estado** con conteo por cada estado
-- **Ordenamiento** por fecha
+- **Ordenamiento** por número de pedido, cliente, total y fecha
 - **Cambio de estado inline** desde un select en la tabla
-- **Modal de detalle** con información de productos, información del cliente, montos y totales
+- **Modal de detalle** con información de los productos, información del cliente, montos y totales
 
 **Estados disponibles:**
 
 | Estado | Descripción |
 |--------|-------------|
-| `pending` | Pendiente — recién creado |
-| `processing` | En proceso — confirmado |
-| `shipped` | Enviado — en camino |
-| `delivered` | Entregado — completado |
-| `cancelled` | Cancelado |
-| `refunded` | Reembolsado |
+| `pending` | Pendiente — Pedido recién creado |
+| `processing` | En proceso — Pedido confirmado |
+| `shipped` | Enviado — Pedido en camino |
+| `delivered` | Entregado — Pedido completado |
+| `cancelled` | Pedido cancelado |
+| `refunded` | Pedido reembolsado |
 
 Al cambiar el estado de un pedido a `shipped` o `delivered` se registra automáticamente la fecha correspondiente (`shipped_at`, `delivered_at`).
 
