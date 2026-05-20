@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Products;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Subcategory;
 use Livewire\Component;
@@ -12,50 +13,32 @@ class ProductIndex extends Component
 {
     use WithFileUploads, WithPagination;
 
+    public int $perPage = 15;
     public string $search = '';
-
     public string $subcategory = '';
-
     public string $stockFilter = '';
-
+    public string $sortDir = 'desc';
     public string $sortBy = 'created_at';
 
-    public string $sortDir = 'desc';
-
-    public int $perPage = 15;
-
+    // Formulario | Modal
+    public ?int $deleteId = null;
     public bool $showForm = false;
-
     public bool $confirmDelete = false;
 
-    public ?int $deleteId = null;
-
-    // Form fields
+    // Formulario | Campos
     public ?int $editId = null;
-
-    public string $name = '';
-
-    public string $description = '';
-
-    public string $shortDescription = '';
-
-    public string $price = '';
-
-    public string $comparePrice = '';
-
     public int $stock = 0;
-
-    public int $lowStockThreshold = 5;
-
     public string $sku = '';
-
-    public ?int $subcategoryId = null;
-
+    public string $name = '';
+    public string $price = '';
     public bool $active = true;
-
     public bool $featured = false;
-
+    public string $description = '';
+    public string $comparePrice = '';
+    public ?int $subcategoryId = null;
+    public int $lowStockThreshold = 5;
     public array $uploadedImages = [];
+    public string $shortDescription = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -88,17 +71,20 @@ class ProductIndex extends Component
         'stock.required' => 'El stock es obligatorio.',
     ];
 
+    // Hook de busqueda
     public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
+    // Abrir modal creación
     public function openCreate(): void
     {
         $this->resetForm();
         $this->showForm = true;
     }
 
+    // Abrir modal edición
     public function openEdit(int $id): void
     {
         $product = Product::findOrFail($id);
@@ -117,6 +103,7 @@ class ProductIndex extends Component
         $this->showForm = true;
     }
 
+    // Guardar producto
     public function save(): void
     {
         $this->validate();
@@ -155,23 +142,30 @@ class ProductIndex extends Component
 
         $this->showForm = false;
         $this->resetForm();
+
+        // Notificar acción creación/edición producto
         $this->dispatch('notify', message: $message);
     }
 
-    public function confirmDelete(int $id): void
+    // Modal confirmación eliminar producto
+    public function handleConfirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->confirmDelete = true;
     }
 
+    // Eliminar producto
     public function delete(): void
     {
         Product::findOrFail($this->deleteId)->delete();
         $this->confirmDelete = false;
         $this->deleteId = null;
+
+        // Notificar eliminación de producto
         $this->dispatch('notify', message: 'Producto eliminado');
     }
 
+    // Activar/Inactivar producto
     public function toggleActive(int $id): void
     {
         $product = Product::findOrFail($id);
@@ -196,16 +190,20 @@ class ProductIndex extends Component
         $this->resetValidation();
     }
 
+    // Cerrar modal edición/creación producto
     public function closeModal(): void
     {
         $this->showForm = false;
     }
 
+    // Listado de productos
     public function getProductsProperty()
     {
         return Product::with('subcategory.category')
-            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%")
-                ->orWhere('sku', 'like', "%{$this->search}%"))
+            ->when($this->search, fn ($q) => $q->where(function ($query) {
+                $query->where('name', 'like', "%{$this->search}%")
+                    ->orWhere('sku', 'like', "%{$this->search}%");
+            }))
             ->when($this->subcategory, fn ($q) => $q->where('subcategory_id', $this->subcategory))
             ->when($this->stockFilter === 'low', fn ($q) => $q->lowStock())
             ->when($this->stockFilter === 'out', fn ($q) => $q->outOfStock())
@@ -217,7 +215,12 @@ class ProductIndex extends Component
     {
         return view('livewire.admin.products.product-index', [
             'products' => $this->products,
-            'subcategories' => Subcategory::with('category')->orderBy('name')->get(),
+            'subcategories' => Subcategory::with('category')
+                ->orderBy(
+                    Category::select('name')
+                        ->whereColumn('categories.id', 'subcategories.category_id')
+                )
+                ->get(),
         ])->layout('layouts.admin');
     }
 }

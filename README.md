@@ -273,10 +273,10 @@ Gestión completa de pedidos con:
 
 | Estado | Descripción |
 |--------|-------------|
-| `pending` | Pendiente — Pedido recién creado |
-| `processing` | En proceso — Pedido confirmado |
-| `shipped` | Enviado — Pedido en camino |
-| `delivered` | Entregado — Pedido completado |
+| `pending` | Pedido recién creado |
+| `processing` | Pedido confirmado |
+| `shipped` | Pedido en camino |
+| `delivered` | Pedido completado |
 | `cancelled` | Pedido cancelado |
 | `refunded` | Pedido reembolsado |
 
@@ -294,7 +294,7 @@ Tabla de todos los usuarios con `is_admin = false`:
 - **Columnas:** nombre, email, fecha de registro, total de pedidos, total gastado
 - **Modal de detalle** con estadísticas del cliente y sus últimos 5 pedidos
 
-### Catálogo
+### Catalogo
 
 El catálogo está organizado en una jerarquía de tres niveles:
 
