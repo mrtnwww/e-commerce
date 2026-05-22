@@ -35,7 +35,7 @@
                                 class="text-xs text-gray-500 hover:underline">
                                 {{ $banner->active ? 'Desactivar' : 'Activar' }}
                             </button>
-                            <button wire:click="confirmDelete({{ $banner->id }})"
+                            <button wire:click="handleConfirmDelete({{ $banner->id }})"
                                 class="text-xs text-red-500 hover:underline">Eliminar</button>
                         </div>
                         <span class="text-xs text-gray-400">Orden: {{ $banner->order }}</span>
@@ -89,6 +89,8 @@
                     @error('image')
                         <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                     @enderror
+                    <div wire:loading wire:target="image" class="text-xs text-indigo-600 mt-1">
+                        Cargando imágenes...</div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -106,7 +108,8 @@
                 <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
                     <button type="button" wire:click="$set('showForm', false)"
                         class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
-                    <button type="submit"
+                    <button type="submit" wire:loading.attr="disabled"
+                        wire:loading.class="opacity-50 cursor-not-allowed" wire:target="image, save"
                         class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium">{{ $editId ? 'Actualizar' : 'Crear' }}</button>
                 </div>
             </form>

@@ -13,26 +13,26 @@ class FamilyIndex extends Component
 
     public string $search = '';
 
+    public ?int $editId = null;
+
+    public ?int $deleteId = null;
+
     public bool $showForm = false;
 
     public bool $confirmDelete = false;
 
-    public ?int $deleteId = null;
-
-    public ?int $editId = null;
+    public $image = null;
 
     public string $name = '';
 
-    public string $description = '';
-
     public bool $active = true;
 
-    public $image = null;
+    public string $description = '';
 
     protected $rules = [
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
         'active' => 'boolean',
+        'description' => 'nullable|string',
+        'name' => 'required|string|max:255',
         'image' => 'nullable|image|max:1024',
     ];
 
@@ -81,10 +81,11 @@ class FamilyIndex extends Component
 
         $this->showForm = false;
         $this->resetForm();
+
         $this->dispatch('notify', message: $msg);
     }
 
-    public function confirmDelete(int $id): void
+    public function handleConfirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->confirmDelete = true;
@@ -95,6 +96,7 @@ class FamilyIndex extends Component
         Family::findOrFail($this->deleteId)->delete();
         $this->confirmDelete = false;
         $this->deleteId = null;
+
         $this->dispatch('notify', message: 'Familia eliminada');
     }
 

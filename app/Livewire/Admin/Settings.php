@@ -41,7 +41,10 @@ class Settings extends Component
 
     public function mount(): void
     {
-        $settings = config('store', []);
+        $settings = file_exists(config_path('store.php'))
+            ? require config_path('store.php')
+            : [];
+
         $this->storeName = $settings['name'] ?? config('app.name');
         $this->storeEmail = $settings['email'] ?? '';
         $this->storePhone = $settings['phone'] ?? '';
@@ -97,6 +100,8 @@ class Settings extends Component
         // Persist to config/store.php
         $export = "<?php\nreturn ".var_export($settings, true).";\n";
         file_put_contents(config_path('store.php'), $export);
+
+        app('config')->set('store', $settings);
 
         $this->currentLogo = $logoPath;
         $this->logo = null;

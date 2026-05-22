@@ -12,28 +12,27 @@ class DiscountIndex extends Component
 
     public string $search = '';
 
+    public ?int $editId = null;
+
+    public ?int $deleteId = null;
+
     public bool $showForm = false;
 
     public bool $confirmDelete = false;
 
-    public ?int $deleteId = null;
-
-    public ?int $editId = null;
-
-    // Form
     public string $code = '';
-
-    public string $type = 'percentage';
 
     public string $value = '';
 
-    public string $minimumOrder = '';
+    public bool $active = true;
 
     public string $maxUses = '';
 
-    public bool $active = true;
-
     public string $expiresAt = '';
+
+    public string $minimumOrder = '';
+
+    public string $type = 'percentage';
 
     protected function rules(): array
     {
@@ -102,10 +101,11 @@ class DiscountIndex extends Component
 
         $this->showForm = false;
         $this->resetForm();
+
         $this->dispatch('notify', message: $msg);
     }
 
-    public function confirmDelete(int $id): void
+    public function handleConfirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->confirmDelete = true;
@@ -116,6 +116,7 @@ class DiscountIndex extends Component
         Discount::findOrFail($this->deleteId)->delete();
         $this->confirmDelete = false;
         $this->deleteId = null;
+
         $this->dispatch('notify', message: 'Descuento eliminado');
     }
 

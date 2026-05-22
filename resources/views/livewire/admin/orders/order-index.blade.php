@@ -1,15 +1,9 @@
 <x-slot name="title">Pedidos</x-slot>
 
 <div class="space-y-4">
-
-    {{-- Filtros --}}
     <div class="bg-white rounded-xl border border-gray-200 p-4 flex flex-wrap items-center gap-3">
-
-        {{-- Filtro de busqueda con debounce de 300ms --}}
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="Buscar por #pedido, nombre o email..."
             class="flex-1 min-w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-
-        {{-- Filtro por estado --}}
         <select wire:model.live="status"
             class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="">Todos los estados</option>
@@ -18,7 +12,6 @@
             @endforeach
         </select>
 
-        {{-- Pedidos por página --}}
         <select wire:model.live="perPage"
             class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="15">15 por página</option>
@@ -62,7 +55,6 @@
                     </tr>
                 </thead>
 
-                {{-- Tabla de pedidos --}}
                 <tbody>
                     @forelse($orders as $order)
                         @php
@@ -125,7 +117,6 @@
         </div>
     </div>
 
-    {{-- Modal detalle de pedido --}}
     @if ($showModal && $selectedOrder)
         <x-modal title="Pedido {{ $selectedOrder->number }}" maxWidth="max-w-2xl">
             <div class="space-y-4">

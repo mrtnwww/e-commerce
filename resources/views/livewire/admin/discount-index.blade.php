@@ -54,7 +54,7 @@
                         <td class="px-5 py-3 text-right flex justify-end gap-2">
                             <button wire:click="openEdit({{ $d->id }})"
                                 class="text-xs text-indigo-600 hover:underline">Editar</button>
-                            <button wire:click="confirmDelete({{ $d->id }})"
+                            <button wire:click="handleConfirmDelete({{ $d->id }})"
                                 class="text-xs text-red-500 hover:underline">Eliminar</button>
                         </td>
                     </tr>
@@ -122,7 +122,8 @@
                 <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
                     <button type="button" wire:click="$set('showForm', false)"
                         class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
-                    <button type="submit"
+                    <button type="submit" wire:loading.attr="disabled"
+                        wire:loading.class="opacity-50 cursor-not-allowed" wire:target="save"
                         class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium">{{ $editId ? 'Actualizar' : 'Crear' }}</button>
                 </div>
             </form>

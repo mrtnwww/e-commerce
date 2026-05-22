@@ -10,52 +10,46 @@ use Livewire\Component;
 class Dashboard extends Component
 {
     public array $lowStockProducts = [];
+
     public array $recentOrders = [];
+
     public array $weeklySales = [];
+
     public array $metrics = [];
 
     public function mount(): void
     {
-        $this->loadMetrics(); // Cargar metricas
-        $this->loadLowStock(); // Cargar productos con bajo stock
-        $this->loadWeeklySales(); // Cargar ventas de los ultimos  7 dias
-        $this->loadRecentOrders(); // Cargar pedidos recientes
+        $this->loadMetrics();
+        $this->loadLowStock();
+        $this->loadWeeklySales();
+        $this->loadRecentOrders();
     }
 
     private function loadMetrics(): void
     {
         $now = now();
 
-        // Inicio del mes actual
         $startMonth = $now->copy()->startOfMonth();
-        // Inicio del mes anterior
         $lastMonth = $now->copy()->subMonth()->startOfMonth();
-        // Fin del mes anterior
         $endLast = $now->copy()->subMonth()->endOfMonth();
 
-        // Valor total ventas del mes actual
         $salesThisMonth = Order::where('created_at', '>=', $startMonth)
             ->whereNotIn('status', ['cancelled', 'refunded'])
             ->sum('total');
 
-        // Valor total ventas mes anterior
         $salesLastMonth = Order::whereBetween('created_at', [$lastMonth, $endLast])
             ->whereNotIn('status', ['cancelled', 'refunded'])
             ->sum('total');
 
-        // Cantidad total ventas mes actual
-        $ordersThis = Order::where('created_at', '>=', $startMonth)->count();
-        // Cantidad total ventas mes anterior
-        $ordersLast = Order::whereBetween('created_at', [$lastMonth, $endLast])->count();
-
-        // Usuarios creados en el mes actual
         $clientsThis = User::where('created_at', '>=', $startMonth)->count();
+
+        $ordersThis = Order::where('created_at', '>=', $startMonth)->count();
+        $ordersLast = Order::whereBetween('created_at', [$lastMonth, $endLast])->count();
 
         /**
          * Delta ventas [((ventas mes actual - ventas mes pasado) / ventas mes pasado) * 100]
          * Delta pedidos [((pedidos mes actual - pedidos mes pasado) / pedidos mes pasado) * 100]
-        */
-
+         */
         $this->metrics = [
             'sales' => $salesThisMonth,
             'sales_delta' => $salesLastMonth > 0

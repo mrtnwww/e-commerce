@@ -1,9 +1,7 @@
 <x-slot name="title">Clientes</x-slot>
 
 <div class="space-y-4">
-
     <div class="flex items-center gap-3">
-        {{-- Filtro de busqueda con debounce de 300ms --}}
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="Buscar por nombre o email..."
             class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
     </div>
@@ -31,7 +29,6 @@
                     </tr>
                 </thead>
 
-                {{-- Tabla de clientes --}}
                 <tbody>
                     @forelse($customers as $customer)
                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
@@ -80,10 +77,8 @@
         </div>
     </div>
 
-    {{-- Modal detalle de cliente --}}
     @if ($showModal && $selectedCustomer)
         <x-modal title="Detalle del cliente">
-            {{-- Información del cliente --}}
             <div class="flex items-center gap-4">
                 <div
                     class="w-14 h-14 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold shrink-0">
@@ -97,8 +92,6 @@
                     @endif
                 </div>
             </div>
-
-            {{-- Estadisticas de pedidos totales --}}
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-gray-50 rounded-xl p-4">
                     <p class="text-xs text-gray-500">Total pedidos</p>
@@ -113,7 +106,6 @@
                 </div>
             </div>
 
-            {{-- Pedidos recientes --}}
             @if ($selectedCustomer->orders->count() > 0)
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Últimos pedidos

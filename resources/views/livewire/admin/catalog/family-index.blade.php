@@ -57,7 +57,7 @@
                         <td class="px-5 py-3 text-right flex justify-end gap-2">
                             <button wire:click="openEdit({{ $family->id }})"
                                 class="text-xs text-indigo-600 hover:underline">Editar</button>
-                            <button wire:click="confirmDelete({{ $family->id }})"
+                            <button wire:click="handleConfirmDelete({{ $family->id }})"
                                 class="text-xs text-red-500 hover:underline">Eliminar</button>
                         </td>
                     </tr>
@@ -71,7 +71,6 @@
         <div class="px-5 py-3 border-t border-gray-100">{{ $families->links() }}</div>
     </div>
 
-    {{-- Form modal --}}
     @if ($showForm)
         <x-modal title="{{ $editId ? 'Editar' : 'Nueva' }} familia" maxWidth="max-w-2xl">
             <form wire:submit="save" class="space-y-4">
@@ -92,7 +91,8 @@
                     <label class="text-xs font-medium text-gray-600">Imagen</label>
                     <input wire:model="image" type="file" accept="image/*"
                         class="mt-1 w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700">
-                    <div wire:loading wire:target="image" class="text-xs text-indigo-600 mt-1">Cargando...</div>
+                    <div wire:loading wire:target="image" class="text-xs text-indigo-600 mt-1">Cargando imágenes...
+                    </div>
                 </div>
                 <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                     <input wire:model="active" type="checkbox" class="rounded border-gray-300 text-indigo-600">
@@ -103,7 +103,8 @@
                         class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
                         Cancelar
                     </button>
-                    <button type="submit"
+                    <button type="submit" wire:loading.attr="disabled"
+                        wire:loading.class="opacity-50 cursor-not-allowed" wire:target="save, image"
                         class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
                         {{ $editId ? 'Actualizar' : 'Crear familia' }}
                     </button>
@@ -112,7 +113,6 @@
         </x-modal>
     @endif
 
-    {{-- Delete confirm --}}
     @if ($confirmDelete)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">

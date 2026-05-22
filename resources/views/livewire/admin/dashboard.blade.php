@@ -1,8 +1,6 @@
 <x-slot name="title">Dashboard</x-slot>
 
 <div class="space-y-6">
-
-    {{-- Metricas --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl border border-gray-200 p-4">
             <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
@@ -46,8 +44,6 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {{-- Grafica con las ventas de los últimos 7 dias --}}
         <div class="flex flex-col justify-between bg-white rounded-xl border border-gray-200 p-5 lg:col-span-2">
             <h3 class="text-sm font-semibold text-gray-700 mb-4">Ventas últimos 7 días</h3>
             @php
@@ -67,7 +63,6 @@
                             <span class="text-xs text-gray-400 leading-none">{{ $label }}</span>
                         </div>
 
-                        {{-- Zona de barras --}}
                         <div class="w-full flex items-end" style="height: {{ $maxBarPx }}px;">
                             @if ($hasData)
                                 <div class="w-full rounded-t-md bg-indigo-500 hover:bg-indigo-600 transition-colors"
@@ -77,14 +72,12 @@
                             @endif
                         </div>
 
-                        {{-- Día de la semana --}}
                         <span class="text-xs text-gray-400 mt-1">{{ $day['day'] }}</span>
                     </div>
                 @endforeach
             </div>
         </div>
 
-        {{-- Productos con bajo stock --}}
         <div class="bg-white rounded-xl border border-gray-200 p-5">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-semibold text-gray-700">Stock crítico</h3>
@@ -111,7 +104,6 @@
         </div>
     </div>
 
-    {{-- Pedidos recientes --}}
     <div class="bg-white rounded-xl border border-gray-200">
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 class="text-sm font-semibold text-gray-700">Últimos pedidos</h3>

@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Catalog;
 
 use App\Models\Category;
+use App\Models\Family;
 use App\Models\Subcategory;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -15,28 +16,27 @@ class SubcategoryIndex extends Component
 
     public string $categoryFilter = '';
 
+    public ?int $editId = null;
+
+    public ?int $deleteId = null;
+
+    public ?int $categoryId = null;
+
     public bool $showForm = false;
 
     public bool $confirmDelete = false;
 
-    public ?int $deleteId = null;
-
-    public ?int $editId = null;
-
-    // Form
     public string $name = '';
-
-    public string $description = '';
 
     public bool $active = true;
 
-    public ?int $categoryId = null;
+    public string $description = '';
 
     protected $rules = [
+        'active' => 'boolean',
+        'description' => 'nullable|string',
         'name' => 'required|string|max:255',
         'categoryId' => 'required|exists:categories,id',
-        'description' => 'nullable|string',
-        'active' => 'boolean',
     ];
 
     protected $messages = [
@@ -86,10 +86,11 @@ class SubcategoryIndex extends Component
 
         $this->showForm = false;
         $this->resetForm();
+
         $this->dispatch('notify', message: $msg);
     }
 
-    public function confirmDelete(int $id): void
+    public function handleConfirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->confirmDelete = true;
@@ -100,6 +101,7 @@ class SubcategoryIndex extends Component
         Subcategory::findOrFail($this->deleteId)->delete();
         $this->confirmDelete = false;
         $this->deleteId = null;
+
         $this->dispatch('notify', message: 'Subcategoría eliminada');
     }
 
@@ -136,7 +138,11 @@ class SubcategoryIndex extends Component
     {
         return view('livewire.admin.catalog.subcategory-index', [
             'subcategories' => $this->subcategories,
-            'categories' => Category::with('family')->orderBy('name')->get(),
+            'categories' => Category::with('family')
+                ->orderBy(Family::select('name')
+                    ->whereColumn('families.id', 'categories.family_id')
+                )
+                ->get(),
         ])->layout('layouts.admin');
     }
 }

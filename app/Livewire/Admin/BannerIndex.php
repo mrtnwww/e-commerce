@@ -15,26 +15,25 @@ class BannerIndex extends Component
 
     public bool $confirmDelete = false;
 
-    public ?int $deleteId = null;
-
     public ?int $editId = null;
 
-    // Form
-    public string $title = '';
+    public ?int $deleteId = null;
 
-    public string $subtitle = '';
-
-    public string $buttonText = '';
-
-    public string $buttonUrl = '';
-
-    public bool $active = true;
-
-    public int $order = 0;
+    public ?string $existingImage = null;
 
     public $image = null;
 
-    public ?string $existingImage = null;
+    public int $order = 0;
+
+    public string $title = '';
+
+    public bool $active = true;
+
+    public string $subtitle = '';
+
+    public string $buttonUrl = '';
+
+    public string $buttonText = '';
 
     protected function rules(): array
     {
@@ -103,10 +102,11 @@ class BannerIndex extends Component
 
         $this->showForm = false;
         $this->resetForm();
+
         $this->dispatch('notify', message: $msg);
     }
 
-    public function confirmDelete(int $id): void
+    public function handleConfirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->confirmDelete = true;
@@ -117,6 +117,7 @@ class BannerIndex extends Component
         Banner::findOrFail($this->deleteId)->delete();
         $this->confirmDelete = false;
         $this->deleteId = null;
+
         $this->dispatch('notify', message: 'Banner eliminado');
     }
 

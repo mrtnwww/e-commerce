@@ -18,6 +18,8 @@
                 <label class="text-xs font-medium text-gray-600">Logo</label>
                 <input wire:model="logo" type="file" accept="image/*"
                     class="mt-1 w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700">
+                <div wire:loading wire:target="logo" class="text-xs text-indigo-600 mt-1">
+                    Cargando imágenes...</div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -109,7 +111,8 @@
         </div>
 
         <div class="flex justify-end">
-            <button type="submit"
+            <button type="submit" wire:loading.attr="disabled" wire:loading.class="opacity-50 cursor-not-allowed"
+                wire:target="logo"
                 class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition-colors">
                 Guardar configuración
             </button>

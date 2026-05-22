@@ -16,31 +16,30 @@ class CategoryIndex extends Component
 
     public string $familyFilter = '';
 
+    public ?int $editId = null;
+
+    public ?int $deleteId = null;
+
+    public ?int $familyId = null;
+
     public bool $showForm = false;
 
     public bool $confirmDelete = false;
 
-    public ?int $deleteId = null;
+    public $image = null;
 
-    public ?int $editId = null;
-
-    // Form
     public string $name = '';
-
-    public string $description = '';
 
     public bool $active = true;
 
-    public ?int $familyId = null;
-
-    public $image = null;
+    public string $description = '';
 
     protected $rules = [
-        'name' => 'required|string|max:255',
-        'familyId' => 'required|exists:families,id',
-        'description' => 'nullable|string',
         'active' => 'boolean',
+        'description' => 'nullable|string',
+        'name' => 'required|string|max:255',
         'image' => 'nullable|image|max:1024',
+        'familyId' => 'required|exists:families,id',
     ];
 
     protected $messages = [
@@ -94,10 +93,11 @@ class CategoryIndex extends Component
 
         $this->showForm = false;
         $this->resetForm();
+
         $this->dispatch('notify', message: $msg);
     }
 
-    public function confirmDelete(int $id): void
+    public function handleConfirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->confirmDelete = true;
@@ -108,6 +108,7 @@ class CategoryIndex extends Component
         Category::findOrFail($this->deleteId)->delete();
         $this->confirmDelete = false;
         $this->deleteId = null;
+
         $this->dispatch('notify', message: 'Categoría eliminada');
     }
 

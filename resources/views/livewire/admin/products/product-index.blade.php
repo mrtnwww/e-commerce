@@ -1,14 +1,9 @@
 <x-slot name="title">Productos</x-slot>
 
 <div class="space-y-4">
-
-    {{-- Filtros --}}
     <div class="flex flex-wrap items-center gap-3">
-        {{-- Filtro de busqueda con debounce de 300ms --}}
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="Buscar por nombre o SKU..."
             class="flex-1 min-w-48 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-
-        {{-- Filtro por Categorías/Subcategorías --}}
         <select wire:model.live="subcategory"
             class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="">Todas las subcategorías</option>
@@ -17,7 +12,6 @@
             @endforeach
         </select>
 
-        {{-- Filtro por stock --}}
         <select wire:model.live="stockFilter"
             class="border border-gray-300 rounded-lg px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <option value="">Todo el stock</option>
@@ -25,7 +19,6 @@
             <option value="out">Sin stock</option>
         </select>
 
-        {{-- Crear nuevo producto --}}
         <button wire:click="openCreate"
             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <i class="fa-solid fa-plus"></i>
@@ -33,7 +26,6 @@
         </button>
     </div>
 
-    {{-- Tabla de productos --}}
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -90,7 +82,6 @@
                                 @endif
                             </td>
 
-                            {{-- Activar/Inactivar producto --}}
                             <td class="px-5 py-3 text-center">
                                 <button wire:click="toggleActive({{ $product->id }})"
                                     class="relative inline-flex h-5 w-9 rounded-full transition-colors {{ $product->active ? 'bg-indigo-600' : 'bg-gray-300' }}">
@@ -99,7 +90,6 @@
                                 </button>
                             </td>
 
-                            {{-- Acciones | Editar/Eliminar producto --}}
                             <td class="px-5 py-3 text-right flex justify-end gap-2">
                                 <button wire:click="openEdit({{ $product->id }})"
                                     class="text-xs text-indigo-600 hover:underline">Editar</button>
@@ -121,7 +111,6 @@
         </div>
     </div>
 
-    {{-- Modal edición/creación producto --}}
     @if ($showForm)
         <x-modal title="{{ $editId ? 'Editar' : 'Nuevo' }} producto" maxWidth="max-w-2xl">
             <form wire:submit="save">
@@ -222,10 +211,8 @@
                         class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
                         Cancelar
                     </button>
-                    <button type="submit"
-                        wire:loading.attr="disabled"
-                        wire:loading.class="opacity-50 cursor-not-allowed"
-                        wire:target="save, uploadedImages"
+                    <button type="submit" wire:loading.attr="disabled"
+                        wire:loading.class="opacity-50 cursor-not-allowed" wire:target="save, uploadedImages"
                         class="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
                         {{ $editId ? 'Actualizar' : 'Crear producto' }}
                     </button>
@@ -234,7 +221,6 @@
         </x-modal>
     @endif
 
-    {{-- Confirmar eliminación producto --}}
     @if ($confirmDelete)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">

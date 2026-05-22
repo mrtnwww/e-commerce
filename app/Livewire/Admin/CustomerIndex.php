@@ -11,10 +11,13 @@ class CustomerIndex extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $sortDir = 'desc';
+
     public string $sortBy = 'created_at';
 
     public ?User $selectedCustomer = null;
+
     public bool $showModal = false;
 
     protected $queryString = [

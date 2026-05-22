@@ -14,30 +14,47 @@ class ProductIndex extends Component
     use WithFileUploads, WithPagination;
 
     public int $perPage = 15;
+
     public string $search = '';
+
     public string $subcategory = '';
+
     public string $stockFilter = '';
+
     public string $sortDir = 'desc';
+
     public string $sortBy = 'created_at';
 
-    // Formulario | Modal
     public ?int $deleteId = null;
+
+    public ?int $editId = null;
+
+    public ?int $subcategoryId = null;
+
     public bool $showForm = false;
+
     public bool $confirmDelete = false;
 
-    // Formulario | Campos
-    public ?int $editId = null;
     public int $stock = 0;
+
     public string $sku = '';
+
     public string $name = '';
+
     public string $price = '';
+
     public bool $active = true;
+
     public bool $featured = false;
+
     public string $description = '';
+
     public string $comparePrice = '';
-    public ?int $subcategoryId = null;
+
     public int $lowStockThreshold = 5;
+
     public array $uploadedImages = [];
+
     public string $shortDescription = '';
 
     protected $queryString = [
@@ -66,25 +83,22 @@ class ProductIndex extends Component
 
     protected $messages = [
         'name.required' => 'El nombre es obligatorio.',
+        'stock.required' => 'El stock es obligatorio.',
         'price.required' => 'El precio es obligatorio.',
         'price.numeric' => 'El precio debe ser un número.',
-        'stock.required' => 'El stock es obligatorio.',
     ];
 
-    // Hook de busqueda
     public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
-    // Abrir modal creación
     public function openCreate(): void
     {
         $this->resetForm();
         $this->showForm = true;
     }
 
-    // Abrir modal edición
     public function openEdit(int $id): void
     {
         $product = Product::findOrFail($id);
@@ -103,7 +117,6 @@ class ProductIndex extends Component
         $this->showForm = true;
     }
 
-    // Guardar producto
     public function save(): void
     {
         $this->validate();
@@ -129,7 +142,7 @@ class ProductIndex extends Component
 
         if ($this->editId) {
             $product = Product::findOrFail($this->editId);
-            if (!empty($images)) {
+            if (! empty($images)) {
                 $data['images'] = array_merge($product->images ?? [], $images);
             }
             $product->update($data);
@@ -143,29 +156,24 @@ class ProductIndex extends Component
         $this->showForm = false;
         $this->resetForm();
 
-        // Notificar acción creación/edición producto
         $this->dispatch('notify', message: $message);
     }
 
-    // Modal confirmación eliminar producto
     public function handleConfirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->confirmDelete = true;
     }
 
-    // Eliminar producto
     public function delete(): void
     {
         Product::findOrFail($this->deleteId)->delete();
         $this->confirmDelete = false;
         $this->deleteId = null;
 
-        // Notificar eliminación de producto
         $this->dispatch('notify', message: 'Producto eliminado');
     }
 
-    // Activar/Inactivar producto
     public function toggleActive(int $id): void
     {
         $product = Product::findOrFail($id);
@@ -190,13 +198,11 @@ class ProductIndex extends Component
         $this->resetValidation();
     }
 
-    // Cerrar modal edición/creación producto
     public function closeModal(): void
     {
         $this->showForm = false;
     }
 
-    // Listado de productos
     public function getProductsProperty()
     {
         return Product::with('subcategory.category')
