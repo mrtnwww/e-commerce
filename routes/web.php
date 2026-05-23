@@ -2,7 +2,7 @@
 
 use App\Livewire\Admin;
 use App\Livewire\Frontend;
-use App\Models\Order;
+use App\Livewire\Frontend\OrderSuccess;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────
@@ -17,11 +17,7 @@ Route::get('/checkout', Frontend\Checkout::class)
     ->name('checkout');
 
 // Confirmación de pedido
-Route::get('/pedido/{number}/confirmacion', function (string $number) {
-    $order = Order::where('number', $number)->firstOrFail();
-
-    return view('frontend.order-success', compact('order'));
-})->name('order.success');
+Route::get('/pedido/{number}/confirmacion', OrderSuccess::class)->name('order.success');
 
 // ─────────────────────────────────────────────────────────────
 // ÁREA DE CLIENTE

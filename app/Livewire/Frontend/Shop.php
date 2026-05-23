@@ -4,6 +4,7 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Family;
 use App\Models\Product;
+use App\Services\CartService;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,13 +14,13 @@ class Shop extends Component
 
     public string $search = '';
 
+    public string $sortBy = 'featured';
+
     public ?int $familyId = null;
 
     public ?int $categoryId = null;
 
     public ?int $subcategoryId = null;
-
-    public string $sortBy = 'featured';
 
     public string $priceMin = '';
 
@@ -60,7 +61,12 @@ class Shop extends Component
 
     public function addToCart(int $productId): void
     {
-        $this->dispatch('cart-add', productId: $productId);
+        $success = (new CartService)->add($productId);
+
+        if ($success) {
+            $this->dispatch('cart-add');
+            $this->dispatch('notify', message: 'Producto añadido al carrito');
+        }
     }
 
     public function getProductsProperty()

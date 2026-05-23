@@ -4,7 +4,6 @@ namespace App\Livewire\Frontend;
 
 use App\Models\Cart;
 use App\Models\Discount;
-use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -23,37 +22,6 @@ class CartComponent extends Component
         $this->loadCart();
     }
 
-    #[\Livewire\Attributes\On('cart-add')]
-    public function addToCart(int $productId): void
-    {
-        $product = Product::find($productId);
-        if (! $product || $product->stock <= 0) {
-            return;
-        }
-
-        $key = Auth::check() ? null : session()->getId();
-
-        $cart = Cart::firstOrNew([
-            'product_id' => $productId,
-            Auth::check() ? 'user_id' : 'session_id' => Auth::check() ? Auth::id() : $key,
-        ]);
-
-        // Don't exceed stock
-        $newQty = ($cart->quantity ?? 0) + 1;
-        if ($newQty > $product->stock) {
-            return;
-        }
-
-        $cart->quantity = $newQty;
-        if (! Auth::check()) {
-            $cart->session_id = $key;
-        }
-        $cart->save();
-
-        $this->loadCart();
-        $this->dispatch('notify', message: 'Producto añadido al carrito');
-    }
-
     public function updateQuantity(int $cartId, int $quantity): void
     {
         $cart = Cart::findOrFail($cartId);
@@ -68,6 +36,7 @@ class CartComponent extends Component
     public function removeItem(int $cartId): void
     {
         Cart::findOrFail($cartId)->delete();
+        $this->dispatch('cart-add');
         $this->loadCart();
     }
 
@@ -112,12 +81,14 @@ class CartComponent extends Component
         ];
     }
 
-    public function getSubtotalAttribute(): float
+    #[\Livewire\Attributes\Computed]
+    public function subtotal(): float
     {
         return collect($this->items)->sum(fn ($i) => $i['quantity'] * $i['price']);
     }
 
-    public function getDiscountAmountAttribute(): float
+    #[\Livewire\Attributes\Computed]
+    public function discountAmount(): float
     {
         if (! $this->appliedCoupon) {
             return 0;
@@ -128,7 +99,8 @@ class CartComponent extends Component
             : min($this->appliedCoupon['value'], $this->subtotal);
     }
 
-    public function getTotalAttribute(): float
+    #[\Livewire\Attributes\Computed]
+    public function total(): float
     {
         return max(0, $this->subtotal - $this->discountAmount);
     }

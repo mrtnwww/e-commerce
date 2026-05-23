@@ -22,7 +22,7 @@
 </head>
 
 <body class="bg-gray-50 text-gray-900 antialiased" x-data="{ mobileMenuOpen: false, cartOpen: false }">
-    {{-- ── ADMIN BAR ────────────────────────────────── --}}
+    {{-- Barra administrador --}}
     @auth
         @if (auth()->user()->is_admin)
             <div class="bg-slate-900 text-slate-300 text-xs px-4 py-2 flex items-center justify-between sticky top-0 z-50">
@@ -44,17 +44,13 @@
         @endif
     @endauth
 
-    {{-- ── NAVBAR ──────────────────────────────────── --}}
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-
-                {{-- Logo --}}
                 <a href="{{ route('shop') }}" class="text-xl font-bold text-indigo-600">
                     {{ config('app.name') }}
                 </a>
 
-                {{-- Search --}}
                 <div class="hidden md:flex flex-1 max-w-xl mx-8">
                     <form action="{{ route('shop') }}" method="GET" class="w-full flex">
                         <input type="text" name="search" value="{{ request('search') }}"
@@ -70,7 +66,6 @@
                     </form>
                 </div>
 
-                {{-- Actions --}}
                 <div class="flex items-center gap-3">
                     @auth
                         <a href="{{ route('account.dashboard') }}" class="text-sm text-gray-600 hover:text-indigo-600">
@@ -91,13 +86,10 @@
                         </a>
                     @endauth
 
-                    {{-- Cart button --}}
+                    {{-- Carrito de compras --}}
                     <a href="{{ route('cart') }}"
                         class="relative flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg text-sm transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
+                        <i class="fa-solid fa-cart-shopping"></i>
                         <span>Carrito</span>
                         <livewire:frontend.cart-badge />
                     </a>
@@ -105,7 +97,7 @@
             </div>
         </div>
 
-        {{-- Category bar --}}
+        {{-- Familias --}}
         <div class="border-t border-gray-100 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center gap-6 overflow-x-auto py-2 text-sm">
@@ -122,12 +114,10 @@
         </div>
     </nav>
 
-    {{-- ── CONTENT ─────────────────────────────────── --}}
     <main>
         {{ $slot }}
     </main>
 
-    {{-- ── FOOTER ──────────────────────────────────── --}}
     <footer class="bg-slate-900 text-slate-300 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
@@ -183,14 +173,8 @@
         </div>
     </footer>
 
-    {{-- Flash notification --}}
-    <div x-data="{ show: false, message: '' }"
-        x-on:notify.window="message = $event.detail.message; show = true; setTimeout(() => show = false, 3500)"
-        x-show="show" x-transition
-        class="fixed bottom-6 right-6 z-50 bg-green-600 text-white px-4 py-3 rounded-xl shadow-xl text-sm"
-        style="display:none">
-        <span x-text="message"></span>
-    </div>
+    {{-- Toast --}}
+    <x-toast />
 
     @livewireScripts
 </body>

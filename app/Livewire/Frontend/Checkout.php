@@ -178,12 +178,14 @@ class Checkout extends Component
         });
     }
 
-    public function getSubtotalAttribute(): float
+    #[\Livewire\Attributes\Computed]
+    public function subtotal(): float
     {
         return collect($this->cartItems)->sum('subtotal');
     }
 
-    public function getDiscountAmountAttribute(): float
+    #[\Livewire\Attributes\Computed]
+    public function discountAmount(): float
     {
         if (! $this->appliedCoupon) {
             return 0;
@@ -194,7 +196,8 @@ class Checkout extends Component
             : min($this->appliedCoupon['value'], $this->subtotal);
     }
 
-    public function getTotalAttribute(): float
+    #[\Livewire\Attributes\Computed]
+    public function total(): float
     {
         return max(0, $this->subtotal - $this->discountAmount);
     }

@@ -1,12 +1,9 @@
 <div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex gap-8">
-
-            {{-- Sidebar filters --}}
             <aside class="hidden lg:block w-56 shrink-0">
                 <div class="sticky top-32 space-y-6">
-
-                    {{-- Families / Categories --}}
+                    {{-- Categorías --}}
                     <div>
                         <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Categorías</h3>
                         <div class="space-y-1">
@@ -38,7 +35,7 @@
                         </div>
                     </div>
 
-                    {{-- Price range --}}
+                    {{-- Rango de precios --}}
                     <div>
                         <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Precio</h3>
                         <div class="flex items-center gap-2">
@@ -50,7 +47,7 @@
                         </div>
                     </div>
 
-                    {{-- In stock only --}}
+                    {{-- Solo disponibles --}}
                     <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                         <input wire:model.live="onlyInStock" type="checkbox"
                             class="rounded border-gray-300 text-indigo-600">
@@ -59,10 +56,7 @@
                 </div>
             </aside>
 
-            {{-- Main content --}}
             <div class="flex-1 min-w-0">
-
-                {{-- Top bar --}}
                 <div class="flex items-center justify-between mb-5">
                     <p class="text-sm text-gray-500">
                         {{ $products->total() }} producto{{ $products->total() !== 1 ? 's' : '' }}
@@ -76,7 +70,7 @@
                     </select>
                 </div>
 
-                {{-- Products grid --}}
+                {{-- Productos --}}
                 <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
                     @forelse($products as $product)
                         <div
@@ -84,7 +78,7 @@
                             <a href="{{ route('product', $product->slug) }}" class="block">
                                 <div class="aspect-square bg-gray-100 overflow-hidden relative">
                                     <img src="{{ $product->main_image }}" alt="{{ $product->name }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
 
                                     @if ($product->discount_percentage)
                                         <span

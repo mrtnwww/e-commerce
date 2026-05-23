@@ -1,6 +1,4 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-    {{-- Breadcrumb --}}
     <nav class="text-xs text-gray-400 mb-6 flex items-center gap-1">
         <a href="{{ route('shop') }}" class="hover:text-indigo-600">Tienda</a>
         @if ($product->subcategory)
@@ -13,8 +11,6 @@
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-
-        {{-- Images --}}
         <div class="space-y-3">
             <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
                 @if ($product->images && count($product->images) > 0)
@@ -37,7 +33,6 @@
             @endif
         </div>
 
-        {{-- Info --}}
         <div class="space-y-5">
             <div>
                 @if ($product->subcategory)
@@ -51,7 +46,6 @@
                 @endif
             </div>
 
-            {{-- Price --}}
             <div class="flex items-baseline gap-3">
                 <span
                     class="text-3xl font-bold text-gray-900">${{ number_format($product->price, 0, ',', '.') }}</span>
@@ -64,7 +58,6 @@
                 @endif
             </div>
 
-            {{-- Stock --}}
             <div>
                 @if ($product->is_out_of_stock)
                     <span class="inline-flex items-center gap-1.5 text-sm text-red-600 font-medium">
@@ -82,7 +75,6 @@
                 @endif
             </div>
 
-            {{-- Quantity + Add to cart --}}
             @if (!$product->is_out_of_stock)
                 <div class="flex items-center gap-4">
                     <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
@@ -101,7 +93,6 @@
                 </div>
             @endif
 
-            {{-- Description --}}
             @if ($product->description)
                 <div class="border-t border-gray-100 pt-5">
                     <h3 class="text-sm font-semibold text-gray-800 mb-2">Descripción</h3>
@@ -111,14 +102,12 @@
                 </div>
             @endif
 
-            {{-- SKU --}}
             @if ($product->sku)
                 <p class="text-xs text-gray-400">SKU: {{ $product->sku }}</p>
             @endif
         </div>
     </div>
 
-    {{-- Related products --}}
     @if ($relatedProducts->count() > 0)
         <div class="mt-16">
             <h2 class="text-lg font-semibold text-gray-800 mb-5">Productos relacionados</h2>
@@ -128,7 +117,7 @@
                         class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group">
                         <div class="aspect-square bg-gray-100 overflow-hidden">
                             <img src="{{ $related->main_image }}" alt="{{ $related->name }}"
-                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
                         </div>
                         <div class="p-3">
                             <p class="text-sm font-medium text-gray-800 line-clamp-2">{{ $related->name }}</p>
